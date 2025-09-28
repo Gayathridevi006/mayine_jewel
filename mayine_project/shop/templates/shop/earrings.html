@@ -1,0 +1,30 @@
+{% extends 'shop/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container py-5" style="background-color:#0a1f44; color:#FFD700; min-height:100vh;">
+  <h1 class="text-center mb-4">Earrings</h1>
+  
+  <div class="row">
+    <div class="col-md-3 mb-4">
+      <div class="card h-100 shadow-sm">
+        <img src="{% static 'shop/images/earrings_item1.png' %}" class="card-img-top" alt="Earrings Item 1">
+        <div class="card-body text-center">
+          <p class="card-text fw-bold">₹499</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3 mb-4">
+      <div class="card h-100 shadow-sm">
+        <img src="{% static 'shop/images/earrings_item2.png' %}" class="card-img-top" alt="Earrings Item 2">
+        <div class="card-body text-center">
+          <p class="card-text fw-bold">₹599</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add more items similarly -->
+  </div>
+</div>
+{% endblock %}
