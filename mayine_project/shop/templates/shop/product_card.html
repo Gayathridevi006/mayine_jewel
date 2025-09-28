@@ -1,0 +1,29 @@
+<!-- templates/shop/product_card.html -->
+<div class="card shadow-sm mb-4 h-100">
+  {% if product.image %}
+    <a href="{% url 'shop:product_detail' product.slug %}">
+      <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+    </a>
+  {% else %}
+    <a href="{% url 'shop:product_detail' product.slug %}">
+      <img src="{% static 'shop/images/placeholder.png' %}" class="card-img-top" alt="{{ product.name }}">
+    </a>
+  {% endif %}
+
+  <div class="card-body d-flex flex-column">
+    <h5 class="card-title text-truncate">
+      <a href="{% url 'shop:product_detail' product.slug %}" class="text-decoration-none text-dark">
+        {{ product.name }}
+      </a>
+    </h5>
+    <p class="card-text fw-bold mb-2">₹{{ product.price }}</p>
+
+    <form action="{% url 'shop:add_to_cart' product.id %}" method="post" class="mt-auto">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-sm btn-primary w-100">
+        Add to Cart
+      </button>
+    </form>
+  </div>
+</div>
+<!-- End of templates/shop/product_card.html -->

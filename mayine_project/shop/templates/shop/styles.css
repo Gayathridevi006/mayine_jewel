@@ -1,0 +1,113 @@
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #fafafa;
+  color: #333;
+}
+
+h1, h2 {
+  font-weight: 600;
+  color: #444;
+}
+
+.navbar-brand {
+  color: #6c3483 !important; /* deep jewel tone */
+}
+
+.segment h2, .featured h2 {
+  border-bottom: 2px solid #6c3483;
+  display: inline-block;
+  padding-bottom: 5px;
+  margin-bottom: 20px;
+}
+
+.card {
+  border: none;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0px 6px 20px rgba(0,0,0,0.1);
+}
+
+.card img {
+  height: 220px;
+  object-fit: cover;
+}
+
+.card-title {
+  font-size: 1rem;
+  margin-bottom: 0.3rem;
+}
+
+.card-text {
+  color: #6c3483;
+}
+
+.btn-primary {
+  background-color: #6c3483;
+  border-color: #6c3483;
+}
+
+.btn-primary:hover {
+  background-color: #52276b;
+  border-color: #52276b;
+}
+
+.homepage-container {
+    background-color: #0a1f44; /* Dark Blue */
+    color: #FFD700;            /* Gold */
+    min-height: 100vh;
+}
+
+.homepage-container a {
+    color: #FFD700;
+    text-decoration: underline;
+}
+.homepage-container a:hover {
+    color: #FFA500; /* Darker Gold on hover */
+    text-decoration: none;
+}
+
+.text-bordered {
+    border: 5px solid white; /* gold on dark blue background */
+    padding: 10px 20px;
+    display: inline-block;
+    border-radius: 10px;
+    font-weight: bold;
+    margin-bottom: auto;
+    font-size: 5rem;
+}
+
+.featured-categories .my-3 {
+    border-radius: 12px;
+    text-align: center;
+}
+
+.section-box {
+    border: 4px solid silver;   /* border color */
+    border-radius: 12px;        /* rounded corners */
+    padding: 20px;              /* space inside the box */
+    margin-bottom: 30px;        /* space between sections */
+    color: goldenrod;           /* text color */
+}
+
+.btn-primary {
+    background-color: #6c3483; /* deep jewel tone */
+    border-color: #6c3483;
+}
+
+h1.custom-heading {
+    font-family: 'Merriweather', serif;
+    font-weight: 700;
+    font-size: 3rem; /* adjust as needed */
+    color: #FFD700; /* golden text */
+    text-align: center;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    -webkit-text-stroke: 1px silver;
+
+}
