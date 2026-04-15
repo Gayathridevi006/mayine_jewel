@@ -1,0 +1,152 @@
+{% extends 'mayin/base.html' %}
+{% block title %}About Us — Mayin Jewellery{% endblock %}
+{% block page_title %}About Mayin{% endblock %}
+{% block page_sub %}Our story, our craft, our promise to you{% endblock %}
+
+{% block extra_head %}
+<style>
+.about-hero { background: var(--text); border-radius: var(--r-lg); padding: 2.5rem 2rem; margin-bottom: 2rem; display: grid; grid-template-columns: 1fr 200px; gap: 2rem; align-items: center; }
+@media(max-width:600px){ .about-hero { grid-template-columns: 1fr; } }
+.about-hero h2 { font-family: 'Cormorant Garamond', serif; font-size: 2.2rem; font-weight: 300; color: white; line-height: 1.2; margin-bottom: .7rem; }
+.about-hero h2 em { font-style: italic; color: var(--gold-lt); }
+.about-hero p { font-size: .88rem; color: rgba(255,255,255,.6); line-height: 1.7; }
+.goldsmith-avatar { width: 160px; height: 160px; border-radius: 50%; background: rgba(201,168,76,.15); display: flex; align-items: center; justify-content: center; font-size: 5rem; border: 2px solid rgba(201,168,76,.3); margin: 0 auto; }
+
+.values-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 2rem; }
+@media(max-width:700px){ .values-grid { grid-template-columns: 1fr; } }
+.val-card { background: white; border: 1px solid var(--bsoft); border-radius: var(--r); padding: 1.3rem; }
+.val-icon { font-size: 1.8rem; display: block; margin-bottom: .6rem; }
+.val-title { font-size: .9rem; font-weight: 500; color: var(--text); margin-bottom: .35rem; }
+.val-text  { font-size: .78rem; color: var(--text-mid); line-height: 1.6; }
+
+.story-section { background: white; border: 1px solid var(--bsoft); border-radius: var(--r-lg); padding: 1.8rem 2rem; margin-bottom: 2rem; }
+.story-section h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; font-weight: 400; color: var(--text); margin-bottom: .8rem; }
+.story-section p { font-size: .88rem; color: var(--text-mid); line-height: 1.8; margin-bottom: .8rem; }
+.story-section p:last-child { margin-bottom: 0; }
+.story-section p strong { color: var(--text); font-weight: 500; }
+
+.milestones { display: flex; flex-direction: column; gap: 0; margin: 1.2rem 0; }
+.milestone { display: flex; gap: 1.2rem; align-items: flex-start; padding: .75rem 0; border-bottom: 1px solid var(--bsoft); }
+.milestone:last-child { border-bottom: none; }
+.m-year { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; color: var(--gold-dk); font-weight: 400; min-width: 52px; padding-top: 1px; }
+.m-text { font-size: .82rem; color: var(--text-mid); line-height: 1.55; }
+.m-text strong { color: var(--text); }
+
+.certifications { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 1.2rem; }
+.cert-badge { display: inline-flex; align-items: center; gap: 6px; background: var(--gold-pale); border: 1px solid rgba(201,168,76,.25); border-radius: 6px; padding: .5rem 1rem; font-size: .78rem; color: var(--gold-dk); font-weight: 500; }
+
+.team-section { margin-bottom: 2rem; }
+.team-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 1rem; }
+@media(max-width:700px){ .team-grid { grid-template-columns: 1fr; } }
+.team-card { background: white; border: 1px solid var(--bsoft); border-radius: var(--r-lg); padding: 1.4rem; text-align: center; }
+.team-avatar { width: 60px; height: 60px; border-radius: 50%; background: var(--blush); display: flex; align-items: center; justify-content: center; font-size: 1.8rem; margin: 0 auto .8rem; border: 1px solid var(--border); }
+.team-name  { font-size: .9rem; font-weight: 500; color: var(--text); margin-bottom: 2px; }
+.team-role  { font-size: .72rem; color: var(--gold-dk); margin-bottom: .35rem; }
+.team-desc  { font-size: .75rem; color: var(--text-lt); line-height: 1.5; }
+
+.location-card { background: white; border: 1px solid var(--bsoft); border-radius: var(--r-lg); padding: 1.4rem; display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+@media(max-width:600px){ .location-card { grid-template-columns: 1fr; } }
+.loc-map-placeholder { background: var(--blush); border-radius: var(--r); height: 160px; display: flex; align-items: center; justify-content: center; font-size: 3rem; }
+.loc-details h4 { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 400; color: var(--text); margin-bottom: .6rem; }
+.loc-row { display: flex; gap: 8px; font-size: .8rem; color: var(--text-mid); margin-bottom: .4rem; }
+.loc-row svg { flex-shrink: 0; margin-top: 2px; }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- Hero -->
+<div class="about-hero">
+  <div>
+    <h2>Crafted with <em>Passion</em>,<br>Worn with Pride</h2>
+    <p>Mayin Jewellery was founded by master goldsmith Balaji Achari, bringing over 20 years of traditional Karnataka jewellery-making to every piece. Based in Karnataka, we serve the state with pride.</p>
+  </div>
+  <div class="goldsmith-avatar">🧑‍🎨</div>
+</div>
+
+<!-- Values -->
+<p class="section-eyebrow">Our Promise</p>
+<h2 class="section-title" style="margin-bottom:1rem">What We Stand For</h2>
+<div class="values-grid">
+  <div class="val-card"><span class="val-icon">🏅</span><div class="val-title">BIS Hallmarked</div><div class="val-text">Every gold piece carries a BIS Hallmark certificate guaranteeing purity and authenticity.</div></div>
+  <div class="val-card"><span class="val-icon">🤝</span><div class="val-title">Transparent Pricing</div><div class="val-text">Gold rate + making charges. No hidden fees. Live metal rates updated daily.</div></div>
+  <div class="val-card"><span class="val-icon">♻️</span><div class="val-title">Old Gold Exchange</div><div class="val-text">Exchange your old gold for new designs at fair market rates with no deductions.</div></div>
+  <div class="val-card"><span class="val-icon">✋</span><div class="val-title">Handcrafted</div><div class="val-text">No machine-made jewellery. Every piece is hand-crafted using traditional Karnataka goldsmithing techniques.</div></div>
+  <div class="val-card"><span class="val-icon">🔧</span><div class="val-title">Lifetime Repair</div><div class="val-text">All Mayin pieces come with free lifetime repair and re-polishing service.</div></div>
+  <div class="val-card"><span class="val-icon">📍</span><div class="val-title">Karnataka Only</div><div class="val-text">We serve Karnataka exclusively, ensuring direct goldsmith contact and same-day support for every customer.</div></div>
+</div>
+
+<!-- Story -->
+<div class="story-section">
+  <h3>Our Story</h3>
+  <p><strong>Mayin Jewellery was founded in 2004</strong> by Balaji Achari, a second-generation goldsmith from a traditional jewellery-making family in Karnataka. What started as a small workshop in Bengaluru has grown into one of Karnataka's most trusted names for handcrafted gold and silver jewellery.</p>
+  <p>The name <strong>Mayin</strong> comes from the Sanskrit word for "magical" — reflecting our belief that each piece of jewellery carries its own story, its own energy. We don't just make jewellery; we craft heirlooms that families pass down through generations.</p>
+  <p>Every piece we create goes through the same hands — Balaji's — ensuring that the quality and soul of the craft is never compromised by mass production.</p>
+  <div class="milestones">
+    <div class="milestone"><div class="m-year">2004</div><div class="m-text"><strong>Founded</strong> — Small workshop in Bengaluru with 3 craftsmen</div></div>
+    <div class="milestone"><div class="m-year">2010</div><div class="m-text"><strong>BIS Certification</strong> — Became an authorised BIS hallmarking centre</div></div>
+    <div class="milestone"><div class="m-year">2016</div><div class="m-text"><strong>Bridal Studio</strong> — Launched dedicated bridal jewellery consultation service</div></div>
+    <div class="milestone"><div class="m-year">2022</div><div class="m-text"><strong>Online Store</strong> — Started serving all of Karnataka with doorstep delivery</div></div>
+    <div class="milestone"><div class="m-year">2024</div><div class="m-text"><strong>500+ Families</strong> — Milestone of 500 happy Karnataka families served</div></div>
+  </div>
+  <div class="certifications">
+    <span class="cert-badge">🏅 BIS Hallmark Certified</span>
+    <span class="cert-badge">✅ GST Registered</span>
+    <span class="cert-badge">🔰 Karnataka MSME</span>
+    <span class="cert-badge">💎 Gem & Jewellery Council Member</span>
+  </div>
+</div>
+
+<!-- Team -->
+<div class="team-section">
+  <p class="section-eyebrow">The People</p>
+  <h2 class="section-title">Meet the Team</h2>
+  <div class="team-grid">
+    <div class="team-card">
+      <div class="team-avatar">👨‍🎨</div>
+      <div class="team-name">Balaji Achari</div>
+      <div class="team-role">Founder & Master Goldsmith</div>
+      <div class="team-desc">20+ years crafting traditional Karnataka jewellery. Trained under his father and grandfather in Bengaluru.</div>
+    </div>
+    <div class="team-card">
+      <div class="team-avatar">👩‍💼</div>
+      <div class="team-name">Meena Achari</div>
+      <div class="team-role">Bridal Consultant</div>
+      <div class="team-desc">Specialises in bridal set curation and customer consultations. 200+ bridal sets delivered.</div>
+    </div>
+    <div class="team-card">
+      <div class="team-avatar">👨‍🔧</div>
+      <div class="team-name">Rajan Kumar</div>
+      <div class="team-role">Silver Craftsman</div>
+      <div class="team-desc">Expert in filigree and traditional silver work. 15 years of 925 sterling silver craftsmanship.</div>
+    </div>
+  </div>
+</div>
+
+<!-- Location -->
+<p class="section-eyebrow">Visit Us</p>
+<h2 class="section-title" style="margin-bottom:1rem">Our Workshop</h2>
+<div class="location-card">
+  <div class="loc-map-placeholder">📍</div>
+  <div class="loc-details">
+    <h4>Mayin Jewellery Workshop</h4>
+    <div class="loc-row"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="var(--gold-dk)" stroke-width="1.5"><path d="M8 1.5C5.5 1.5 3.5 3.5 3.5 6c0 3.5 4.5 8.5 4.5 8.5S12.5 9.5 12.5 6c0-2.5-2-4.5-4.5-4.5z"/><circle cx="8" cy="6" r="1.5"/></svg>
+      Bengaluru, Karnataka — 560001
+    </div>
+    <div class="loc-row"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="var(--gold-dk)" stroke-width="1.5"><path d="M3 2h3l1.5 3.5-2 1.2A9 9 0 008.3 10l1.2-2L13 9.5V13a1 1 0 01-1 1C5.4 14 2 7.6 2 3a1 1 0 011-1z"/></svg>
+      +91 9845024348
+    </div>
+    <div class="loc-row"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="var(--gold-dk)" stroke-width="1.4"><rect x="1.5" y="3.5" width="13" height="9" rx="1.5"/><path d="M1.5 4l6.5 5 6.5-5"/></svg>
+      balajiachari18@gmail.com
+    </div>
+    <div class="loc-row" style="margin-top:.5rem;font-size:.75rem;color:var(--text-lt);">
+      Mon–Sat: 9:00 AM – 7:00 PM · Sunday: By appointment
+    </div>
+    <div style="margin-top:1rem;display:flex;gap:.6rem">
+      <a href="tel:+919845024348" class="btn btn-gold btn-sm">Call Now</a>
+      <a href="https://wa.me/919845024348" class="btn btn-outline btn-sm" target="_blank">WhatsApp</a>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

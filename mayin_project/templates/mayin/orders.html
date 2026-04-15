@@ -1,0 +1,148 @@
+{% extends 'mayin/base.html' %}
+{% block title %}My Orders — Mayin Jewellery{% endblock %}
+{% block page_title %}My Orders{% endblock %}
+{% block page_sub %}Track and manage your orders{% endblock %}
+
+{% block extra_head %}
+<style>
+.orders-wrap { max-width: 780px; }
+.auth-gate { background: white; border: 1px solid var(--bsoft); border-radius: var(--r-lg); padding: 2.5rem; text-align: center; }
+.auth-gate .icon { font-size: 3rem; margin-bottom: 1rem; }
+.auth-gate h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-weight: 400; color: var(--text); margin-bottom: .5rem; }
+.auth-gate p { font-size: .85rem; color: var(--text-mid); margin-bottom: 1.4rem; }
+.auth-gate-btns { display: flex; justify-content: center; gap: .75rem; }
+
+.order-card { background: white; border: 1px solid var(--bsoft); border-radius: var(--r-lg); overflow: hidden; margin-bottom: 1rem; transition: box-shadow .2s; }
+.order-card:hover { box-shadow: var(--sh-sm); }
+.order-head { padding: .9rem 1.2rem; background: var(--blush); border-bottom: 1px solid var(--bsoft); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: .5rem; }
+.order-id { font-size: .78rem; font-weight: 500; color: var(--text); letter-spacing: .04em; }
+.order-date { font-size: .72rem; color: var(--text-lt); }
+.order-status { display: inline-flex; align-items: center; gap: 5px; padding: .25rem .75rem; border-radius: 100px; font-size: .7rem; font-weight: 500; }
+.status-confirmed { background: rgba(74,180,100,.1); color: #2d7a3e; border: 1px solid rgba(74,180,100,.25); }
+.status-processing { background: rgba(201,168,76,.1); color: var(--gold-dk); border: 1px solid rgba(201,168,76,.25); }
+.status-shipped    { background: rgba(74,144,226,.1); color: #1a5fa8; border: 1px solid rgba(74,144,226,.25); }
+.status-delivered  { background: rgba(74,180,100,.12); color: #186630; border: 1px solid rgba(74,180,100,.3); }
+.status-cancelled  { background: rgba(200,60,60,.08); color: #9a2828; border: 1px solid rgba(200,60,60,.2); }
+
+.order-items { padding: .9rem 1.2rem; }
+.order-item-row { display: flex; align-items: center; gap: .9rem; padding: .5rem 0; border-bottom: 1px solid var(--bsoft); }
+.order-item-row:last-child { border-bottom: none; }
+.oi-emoji { width: 44px; height: 44px; background: var(--blush); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; flex-shrink: 0; }
+.oi-name  { font-size: .85rem; font-weight: 500; color: var(--text); }
+.oi-qty   { font-size: .72rem; color: var(--text-lt); }
+.oi-price { margin-left: auto; font-family: 'Cormorant Garamond', serif; font-size: 1.05rem; color: var(--gold-dk); white-space: nowrap; }
+
+.order-foot { padding: .8rem 1.2rem; border-top: 1px solid var(--bsoft); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: .5rem; background: #fffdf8; }
+.order-total-label { font-size: .72rem; color: var(--text-lt); }
+.order-total-val   { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; color: var(--text); font-weight: 400; }
+.order-actions { display: flex; gap: .5rem; }
+
+.empty-orders { text-align: center; padding: 3rem 1rem; }
+.empty-orders .eo-icon { font-size: 3rem; margin-bottom: 1rem; }
+.empty-orders h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; font-weight: 400; color: var(--text); margin-bottom: .5rem; }
+.empty-orders p  { font-size: .85rem; color: var(--text-mid); margin-bottom: 1.4rem; }
+
+.loading-spinner { display: flex; align-items: center; justify-content: center; padding: 3rem; gap: .6rem; font-size: .85rem; color: var(--text-lt); }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="orders-wrap">
+  <div id="ordersRoot">
+    <div class="loading-spinner">Loading orders…</div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const INR = n => '₹' + Number(n).toLocaleString('en-IN');
+
+function statusClass(s) {
+  return { confirmed:'status-confirmed', processing:'status-processing', shipped:'status-shipped', delivered:'status-delivered', cancelled:'status-cancelled' }[s] || 'status-confirmed';
+}
+function statusLabel(s) {
+  return { confirmed:'Order Confirmed', processing:'Being Crafted', shipped:'Shipped', delivered:'Delivered', cancelled:'Cancelled' }[s] || s;
+}
+
+async function loadOrders() {
+  const root = document.getElementById('ordersRoot');
+  const token = localStorage.getItem('mayinToken');
+  const user  = JSON.parse(localStorage.getItem('mayinUser') || 'null');
+
+  if (!token || !user) {
+    root.innerHTML = `
+      <div class="auth-gate">
+        <div class="icon">🔐</div>
+        <h3>Sign in to view your orders</h3>
+        <p>Your order history will appear here once you sign in.</p>
+        <div class="auth-gate-btns">
+          <a href="/signin/" class="btn btn-gold">Sign In</a>
+          <a href="/signup/" class="btn btn-outline">Create Account</a>
+        </div>
+      </div>`; return;
+  }
+
+  try {
+    const res = await fetch('http://localhost:8001/api/orders', {
+      headers: { 'Authorization': 'Bearer ' + token }
+    });
+    if (!res.ok) throw new Error('auth');
+    const data = await res.json();
+    const orders = data.orders || [];
+
+    if (!orders.length) {
+      root.innerHTML = `
+        <div class="order-card">
+          <div class="empty-orders">
+            <div class="eo-icon">📦</div>
+            <h3>No orders yet</h3>
+            <p>Your orders will appear here after you checkout.</p>
+            <a href="/" class="btn btn-gold">Start Shopping</a>
+          </div>
+        </div>`; return;
+    }
+
+    root.innerHTML = `<p class="section-eyebrow">Order History</p>
+      <h2 class="section-title" style="margin-bottom:1rem">${orders.length} Order${orders.length>1?'s':''}</h2>` +
+      orders.map(o => {
+        const items = o.items || [];
+        return `
+          <div class="order-card">
+            <div class="order-head">
+              <div>
+                <div class="order-id">${o.order_id}</div>
+                <div class="order-date">${new Date(o.created_at).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})}</div>
+              </div>
+              <span class="order-status ${statusClass(o.status)}">${statusLabel(o.status)}</span>
+            </div>
+            <div class="order-items">
+              ${items.map(i => `
+                <div class="order-item-row">
+                  <div class="oi-emoji">${i.emoji || '💎'}</div>
+                  <div><div class="oi-name">${i.name}</div><div class="oi-qty">Qty: ${i.qty}</div></div>
+                  <div class="oi-price">${INR(i.price * i.qty)}</div>
+                </div>`).join('')}
+            </div>
+            <div class="order-foot">
+              <div><div class="order-total-label">Order Total</div><div class="order-total-val">${INR(o.total)}</div></div>
+              <div class="order-actions">
+                <a href="/track/?id=${o.order_id}" class="btn btn-outline btn-sm">Track</a>
+                <button class="btn btn-dark btn-sm" onclick="reorder(${JSON.stringify(o.items).replace(/"/g,'&quot;')})">Reorder</button>
+              </div>
+            </div>
+          </div>`;
+      }).join('');
+  } catch (e) {
+    root.innerHTML = `<div class="auth-gate"><div class="icon">⚠️</div><h3>Could not load orders</h3><p>Please sign in again.</p><div class="auth-gate-btns"><a href="/signin/" class="btn btn-gold">Sign In</a></div></div>`;
+  }
+}
+
+function reorder(items) {
+  items.forEach(i => addToCart(i.id, i.name, i.price, i.emoji || '💎'));
+  showToast('Items added to cart!', '🛒');
+}
+
+loadOrders();
+</script>
+{% endblock %}

@@ -1,0 +1,321 @@
+{% extends 'mayin/base.html' %}
+
+{% block title %}Custom Order — mayin Jewellery{% endblock %}
+
+{% block extra_head %}
+<style>
+
+  .page-hero {
+    background: linear-gradient(135deg, var(--ivory), var(--blush));
+    padding: 5rem 2rem 4rem;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+  }
+  .page-hero-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 0.8rem;
+  }
+  .page-hero h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.4rem, 6vw, 4rem);
+    font-weight: 300;
+    color: var(--charcoal);
+    margin-bottom: 0.8rem;
+  }
+  .page-hero h1 em { font-style: italic; color: var(--gold-dark); }
+  .page-hero p { color: var(--text-light); font-size: 0.95rem; max-width: 500px; margin: 0 auto; }
+
+  /* ── MAIN LAYOUT ── */
+  .order-section {
+    max-width: 1000px;
+    margin: 4rem auto;
+    padding: 0 2rem;
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 3rem;
+    align-items: start;
+  }
+  @media (max-width: 768px) {
+    .order-section { grid-template-columns: 1fr; }
+  }
+
+  /* ── CONTACT CARD ── */
+  .contact-card {
+    background: var(--charcoal);
+    border-radius: 10px;
+    padding: 2.5rem 2rem;
+    color: white;
+    position: sticky;
+    top: 88px;
+  }
+  .contact-card-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 1.2rem;
+  }
+  .contact-card h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2rem;
+    font-weight: 300;
+    margin-bottom: 0.6rem;
+    line-height: 1.2;
+  }
+  .contact-card p { font-size: 0.88rem; color: var(--rose); margin-bottom: 1.5rem; }
+
+  .big-phone-link {
+    display: block;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.8rem;
+    color: var(--gold-light);
+    text-decoration: none;
+    margin-bottom: 1.2rem;
+    letter-spacing: 0.04em;
+    transition: color 0.2s;
+  }
+  .big-phone-link:hover { color: white; }
+
+  .karnataka-chip {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    background: rgba(201,168,76,0.15);
+    border: 1px solid rgba(201,168,76,0.3);
+    border-radius: 100px;
+    padding: 0.35rem 0.9rem;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    color: var(--gold-light);
+    margin-bottom: 2rem;
+  }
+
+  .service-list { list-style: none; margin-top: 1.5rem; }
+  .service-list li {
+    padding: 0.55rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    font-size: 0.88rem;
+    color: var(--rose);
+    display: flex; align-items: center; gap: 0.6rem;
+  }
+  .service-list li::before {
+    content: '✦';
+    color: var(--gold);
+    font-size: 0.6rem;
+    flex-shrink: 0;
+  }
+
+  /* ── FORM ── */
+  .form-card {
+    background: white;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    padding: 2.5rem 2rem;
+  }
+  .form-card h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.7rem;
+    color: var(--charcoal);
+    font-weight: 400;
+    margin-bottom: 1.8rem;
+  }
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  @media (max-width: 540px) { .form-row { grid-template-columns: 1fr; } }
+
+  .form-group { display: flex; flex-direction: column; gap: 0.4rem; margin-bottom: 1rem; }
+  label {
+    font-size: 0.72rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-light);
+  }
+  input, select, textarea {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1.5px solid var(--border);
+    border-radius: 4px;
+    font-family: 'Jost', sans-serif;
+    font-size: 0.9rem;
+    color: var(--text);
+    background: var(--warm-white);
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+  }
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(201,168,76,0.12);
+    background: white;
+  }
+  textarea { resize: vertical; min-height: 120px; }
+  select { appearance: none; cursor: pointer; }
+
+  .form-submit {
+    width: 100%;
+    padding: 1rem;
+    background: var(--gold);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-family: 'Jost', sans-serif;
+    font-size: 0.85rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.25s, transform 0.2s;
+    margin-top: 0.5rem;
+  }
+  .form-submit:hover { background: var(--gold-dark); transform: translateY(-1px); }
+
+  .form-note {
+    font-size: 0.75rem;
+    color: var(--taupe);
+    margin-top: 1rem;
+    text-align: center;
+    line-height: 1.5;
+  }
+
+  .success-msg {
+    display: none;
+    background: rgba(74,200,100,0.08);
+    border: 1px solid rgba(74,200,100,0.3);
+    border-radius: 6px;
+    padding: 1.2rem;
+    color: #3a8a52;
+    font-size: 0.9rem;
+    text-align: center;
+    margin-top: 1rem;
+  }
+
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="page-hero">
+  <p class="page-hero-label">Personalised for You</p>
+  <h1>Custom <em>Gold Design</em></h1>
+  <p>Describe your dream jewellery. Our master goldsmith will bring it to life — exclusively in Karnataka.</p>
+</div>
+
+<div class="order-section">
+
+  <!-- LEFT: CONTACT INFO -->
+  <div class="contact-card">
+    <p class="contact-card-label">Speak with Our Goldsmith</p>
+    <h2>Let's Create Something Extraordinary</h2>
+    <p>Call us directly to discuss your custom design requirements:</p>
+    <a href="tel:+919845024348" class="big-phone-link">{{ phone }}</a>
+    <span class="karnataka-chip">🗺 Karnataka Only</span>
+
+    <p style="color:var(--taupe); font-size:0.78rem; letter-spacing:0.08em; text-transform:uppercase;">Our Services</p>
+    <ul class="service-list">
+      {% for s in services %}
+      <li>{{ s }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <!-- RIGHT: ENQUIRY FORM -->
+  <div class="form-card">
+    <h3>Send an Enquiry</h3>
+
+    <form id="customOrderForm">
+      {% csrf_token %}
+      <div class="form-row">
+        <div class="form-group">
+          <label for="name">Full Name</label>
+          <input type="text" id="name" name="name" placeholder="Your name" required>
+        </div>
+        <div class="form-group">
+          <label for="phone">Phone Number</label>
+          <input type="tel" id="phone" name="phone" placeholder="+91 98XXXXXXXX" required>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="city">City (Karnataka)</label>
+        <input type="text" id="city" name="city" placeholder="e.g. Bengaluru, Mysuru, Mangaluru">
+      </div>
+
+      <div class="form-group">
+        <label for="metal">Metal Preference</label>
+        <select id="metal" name="metal">
+          <option value="">Select metal type</option>
+          <option>22K Gold</option>
+          <option>24K Gold</option>
+          <option>18K Gold</option>
+          <option>Sterling Silver</option>
+          <option>Gold + Diamond</option>
+          <option>Not sure yet</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="jewellery_type">Type of Jewellery</label>
+        <select id="jewellery_type" name="jewellery_type">
+          <option value="">Select type</option>
+          <option>Necklace / Haaram</option>
+          <option>Ring</option>
+          <option>Bangles / Kada</option>
+          <option>Earrings / Jhumkas</option>
+          <option>Anklet / Payal</option>
+          <option>Pendant / Locket</option>
+          <option>Full Bridal Set</option>
+          <option>Other</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="budget">Approximate Budget (₹)</label>
+        <select id="budget" name="budget">
+          <option value="">Select budget range</option>
+          <option>Under ₹10,000</option>
+          <option>₹10,000 – ₹25,000</option>
+          <option>₹25,000 – ₹50,000</option>
+          <option>₹50,000 – ₹1,00,000</option>
+          <option>₹1,00,000 – ₹5,00,000</option>
+          <option>Above ₹5,00,000</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="description">Describe Your Design</label>
+        <textarea id="description" name="description" placeholder="Describe the style, occasion, any specific design ideas, references, or inspirations…"></textarea>
+      </div>
+
+      <button type="submit" class="form-submit">Submit Enquiry</button>
+
+      <div class="success-msg" id="successMsg">
+        ✅ Thank you! We've received your enquiry. Our goldsmith will call you within 24 hours.
+      </div>
+
+      <p class="form-note">
+        By submitting, you agree to be contacted by mayin Jewellery.<br>
+        We never share your information with third parties.
+      </p>
+    </form>
+  </div>
+
+</div>
+
+<script>
+  document.getElementById('customOrderForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    // For now, show a success message (integrate with your backend as needed)
+    const btn = this.querySelector('.form-submit');
+    btn.textContent = 'Sending…';
+    btn.disabled = true;
+    setTimeout(() => {
+      btn.style.display = 'none';
+      document.getElementById('successMsg').style.display = 'block';
+    }, 800);
+  });
+</script>
+
+{% endblock %}

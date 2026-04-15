@@ -1,0 +1,119 @@
+{% extends 'mayin/base.html' %}
+{% block title %}Collections — Mayin Jewellery{% endblock %}
+{% block page_title %}Our Collections{% endblock %}
+{% block page_sub %}Every piece tells a story · Handcrafted in Karnataka{% endblock %}
+
+{% block extra_head %}
+<style>
+.collections-hero {
+  background: linear-gradient(135deg, var(--ivory) 0%, var(--blush) 60%, #f0e4d0 100%);
+  border-radius: var(--r-lg); padding: 2.5rem 2rem; margin-bottom: 2rem;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; align-items: center;
+}
+.hero-text .eyebrow { font-size: .68rem; letter-spacing: .28em; text-transform: uppercase; color: var(--gold); margin-bottom: .5rem; }
+.hero-text h2 { font-family: 'Cormorant Garamond', serif; font-size: 2.4rem; font-weight: 300; color: var(--text); line-height: 1.15; margin-bottom: .8rem; }
+.hero-text h2 em { font-style: italic; color: var(--gold-dk); }
+.hero-text p { font-size: .88rem; color: var(--text-mid); line-height: 1.7; margin-bottom: 1.2rem; }
+.hero-stats { display: flex; gap: 1.5rem; }
+.stat { text-align: center; }
+.stat-n { font-family: 'Cormorant Garamond', serif; font-size: 1.9rem; color: var(--gold-dk); }
+.stat-l { font-size: .68rem; color: var(--text-lt); letter-spacing: .08em; }
+.hero-ornament { display: flex; flex-direction: column; gap: .8rem; }
+.orn-row { display: flex; gap: .8rem; }
+.orn-box { flex: 1; background: white; border: 1px solid var(--border); border-radius: var(--r); padding: 1.2rem; text-align: center; }
+.orn-emoji { font-size: 2rem; display: block; margin-bottom: .4rem; }
+.orn-name { font-size: .78rem; font-weight: 500; color: var(--text); }
+.orn-ct { font-size: .68rem; color: var(--text-lt); margin-top: 2px; }
+
+.coll-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; margin-bottom: 2.5rem; }
+@media(max-width:900px){ .coll-grid { grid-template-columns: 1fr 1fr; } }
+@media(max-width:560px){ .coll-grid { grid-template-columns: 1fr; } }
+
+.coll-card {
+  background: white; border: 1px solid var(--bsoft); border-radius: var(--r-lg);
+  overflow: hidden; text-decoration: none; color: inherit; display: block;
+  transition: all .22s var(--ease);
+}
+.coll-card:hover { transform: translateY(-4px); box-shadow: var(--sh-lg); border-color: rgba(201,168,76,.4); }
+.coll-img {
+  height: 180px; background: var(--blush);
+  display: flex; align-items: center; justify-content: center; font-size: 4rem;
+  position: relative; overflow: hidden;
+}
+.coll-img::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(to bottom, transparent 50%, rgba(58,46,40,.35) 100%);
+}
+.coll-count {
+  position: absolute; bottom: 10px; right: 10px; z-index: 1;
+  background: rgba(255,255,255,.9); color: var(--gold-dk);
+  font-size: .65rem; padding: 2px 8px; border-radius: 100px; font-weight: 500;
+}
+.coll-body { padding: 1rem 1.1rem 1.2rem; }
+.coll-name { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 400; color: var(--text); margin-bottom: .3rem; }
+.coll-desc { font-size: .78rem; color: var(--text-mid); line-height: 1.55; margin-bottom: .8rem; }
+.coll-price-from { font-size: .72rem; color: var(--text-lt); }
+.coll-price-from strong { color: var(--gold-dk); font-size: .88rem; }
+
+.featured-strip { background: var(--text); border-radius: var(--r-lg); padding: 1.8rem 2rem; margin-bottom: 2rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.featured-strip h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; color: white; font-weight: 300; }
+.featured-strip p { font-size: .82rem; color: var(--gold-lt); margin-top: 3px; }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- Hero -->
+<div class="collections-hero">
+  <div class="hero-text">
+    <div class="eyebrow">Our Heritage</div>
+    <h2>Each Collection,<br>a <em>Living Tradition</em></h2>
+    <p>From temple classics to modern bridal sets, every piece is handcrafted by our master goldsmith with over 20 years of Karnataka craftsmanship.</p>
+    <div class="hero-stats">
+      <div class="stat"><div class="stat-n">200+</div><div class="stat-l">Unique Designs</div></div>
+      <div class="stat"><div class="stat-n">22K</div><div class="stat-l">Pure Gold</div></div>
+      <div class="stat"><div class="stat-n">20+</div><div class="stat-l">Years Craft</div></div>
+    </div>
+  </div>
+  <div class="hero-ornament">
+    <div class="orn-row">
+      <div class="orn-box"><span class="orn-emoji">📿</span><div class="orn-name">Temple</div><div class="orn-ct">18 designs</div></div>
+      <div class="orn-box"><span class="orn-emoji">💍</span><div class="orn-name">Bridal</div><div class="orn-ct">24 sets</div></div>
+    </div>
+    <div class="orn-row">
+      <div class="orn-box"><span class="orn-emoji">✨</span><div class="orn-name">Silver</div><div class="orn-ct">32 pieces</div></div>
+      <div class="orn-box"><span class="orn-emoji">🛠️</span><div class="orn-name">Custom</div><div class="orn-ct">On order</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- Collections grid -->
+<p class="section-eyebrow">Browse by Collection</p>
+<h2 class="section-title" style="margin-bottom:1.2rem">All Collections</h2>
+
+<div class="coll-grid">
+  {% for coll in collections %}
+  <a href="/?cat={{ coll.slug }}" class="coll-card">
+    <div class="coll-img">
+      <span>{{ coll.emoji }}</span>
+      <span class="coll-count">{{ coll.count }} pieces</span>
+    </div>
+    <div class="coll-body">
+      <div class="coll-name">{{ coll.name }}</div>
+      <div class="coll-desc">{{ coll.description }}</div>
+      <div class="coll-price-from">Starting from <strong>{{ coll.from_price }}</strong></div>
+    </div>
+  </a>
+  {% endfor %}
+</div>
+
+<!-- Custom design strip -->
+<div class="featured-strip">
+  <div>
+    <h3>Don't see what you're looking for?</h3>
+    <p>Our goldsmith crafts fully custom pieces to your exact specification.</p>
+  </div>
+  <a href="{% url 'custom_order' %}" class="btn btn-gold">Order Custom Design</a>
+</div>
+
+{% endblock %}

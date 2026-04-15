@@ -1,0 +1,303 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}Mayin Jewellery{% endblock %}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold:       #c9a84c;
+  --gold-lt:    #e8c97a;
+  --gold-dk:    #9e7a2a;
+  --gold-pale:  #f7f0e0;
+  --cream:      #fdf8f0;
+  --ivory:      #fff9f2;
+  --blush:      #fdf3e7;
+  --border:     #e8d8c8;
+  --bsoft:      #f0e8d8;
+  --text:       #3a2e28;
+  --text-mid:   #7a6a60;
+  --text-lt:    #a09080;
+  --text-faint: #c8b8a8;
+  --sidebar-w:  272px;
+  --r:          10px;
+  --r-lg:       14px;
+  --sh-sm:      0 2px 8px rgba(160,120,60,.08);
+  --sh-md:      0 8px 28px rgba(160,120,60,.13);
+  --sh-lg:      0 20px 50px rgba(160,120,60,.18);
+  --ease:       cubic-bezier(.4,0,.2,1);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--text); line-height: 1.6; font-weight: 300; }
+
+/* ── Shell ── */
+.shell { display: grid; grid-template-columns: var(--sidebar-w) 1fr; min-height: 100vh; }
+
+/* ── Sidebar ── */
+.sidebar { background: var(--ivory); border-right: 1px solid var(--border); display: flex; flex-direction: column; position: sticky; top: 0; height: 100vh; overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--border) transparent; }
+.logo-block { padding: 1.1rem 1rem 0.75rem; border-bottom: 1px solid var(--bsoft); text-align: center; }
+.sidebar-logo { width: 142px; height: auto; display: block; margin: 0 auto; }
+.nav-body { padding: .5rem 0; flex: 1; }
+.nav-label { font-size: .62rem; letter-spacing: .22em; text-transform: uppercase; color: var(--text-faint); padding: .75rem 1.2rem .25rem; font-weight: 500; }
+.nav-item { display: flex; align-items: center; gap: 9px; padding: .5rem 1.2rem; font-size: .83rem; color: var(--text-mid); cursor: pointer; border-left: 2px solid transparent; transition: all .2s var(--ease); text-decoration: none; font-weight: 400; }
+.nav-item svg { width: 14px; height: 14px; flex-shrink: 0; opacity: .6; transition: opacity .2s; }
+.nav-item:hover { background: var(--blush); color: var(--text); }
+.nav-item:hover svg { opacity: .85; }
+.nav-item.active { color: var(--gold-dk); border-left-color: var(--gold); background: linear-gradient(90deg,rgba(201,168,76,.09) 0%,transparent 100%); font-weight: 500; }
+.nav-item.active svg { opacity: 1; }
+.nav-badge { margin-left: auto; background: var(--gold); color: white; font-size: .6rem; padding: 1px 6px; border-radius: 100px; font-weight: 500; display: none; }
+.nav-badge.show { display: inline-block; }
+.contact-block { padding: .9rem 1.2rem; border-top: 1px solid var(--bsoft); background: var(--blush); }
+.contact-tag { font-size: .62rem; letter-spacing: .18em; text-transform: uppercase; color: var(--text-faint); margin-bottom: .45rem; font-weight: 500; }
+.contact-phone { display: flex; align-items: center; gap: 6px; font-size: .93rem; font-weight: 500; color: var(--gold-dk); text-decoration: none; margin-bottom: 3px; }
+.contact-phone:hover { color: var(--gold); }
+.contact-email { display: flex; align-items: center; gap: 6px; font-size: .73rem; color: var(--text-lt); text-decoration: none; margin-bottom: 4px; }
+.contact-email:hover { color: var(--gold-dk); }
+.contact-note { font-size: .67rem; color: var(--text-faint); display: flex; align-items: center; gap: 4px; }
+.online-dot { width: 6px; height: 6px; border-radius: 50%; background: #3b6d11; animation: pulse-g 2s infinite; flex-shrink: 0; }
+@keyframes pulse-g { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.45;transform:scale(.82)} }
+
+/* ── Main area ── */
+.main { display: flex; flex-direction: column; min-width: 0; background: var(--cream); }
+
+/* ── Top bar ── */
+.topbar { background: var(--ivory); border-bottom: 1px solid var(--bsoft); padding: .85rem 2rem; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 40; backdrop-filter: blur(8px); }
+.topbar-left h1 { font-family: 'Cormorant Garamond', serif; font-size: 1.35rem; font-weight: 400; color: var(--text); letter-spacing: .02em; }
+.topbar-left p { font-size: .7rem; color: var(--text-lt); margin-top: 1px; }
+.topbar-right { display: flex; align-items: center; gap: .65rem; }
+.tb-btn { display: inline-flex; align-items: center; gap: 5px; padding: .42rem .9rem; border-radius: 6px; font-size: .77rem; font-family: 'DM Sans', sans-serif; cursor: pointer; transition: all .2s; text-decoration: none; font-weight: 400; }
+.tb-ghost { background: transparent; border: 1px solid var(--border); color: var(--text-mid); }
+.tb-ghost:hover { border-color: var(--gold); color: var(--gold-dk); background: var(--gold-pale); }
+.tb-gold { background: var(--gold); border: 1px solid transparent; color: white; }
+.tb-gold:hover { background: var(--gold-dk); }
+.tb-cart { position: relative; }
+.cart-count-badge { position: absolute; top:-5px; right:-5px; background: var(--gold-dk); color: white; font-size: .58rem; width: 16px; height: 16px; border-radius: 50%; display: none; align-items: center; justify-content: center; font-weight: 600; }
+.cart-count-badge.show { display: flex; }
+
+/* ── Price ticker ── */
+.price-bar { background: var(--text); padding: .42rem 2rem; display: flex; align-items: center; gap: 1.4rem; cursor: pointer; overflow: hidden; transition: background .2s; }
+.price-bar:hover { background: #2a201a; }
+.pb-label { font-size: .63rem; letter-spacing: .2em; text-transform: uppercase; color: var(--gold-lt); white-space: nowrap; display: flex; align-items: center; gap: 5px; flex-shrink: 0; }
+.ticker-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--gold); animation: blink 1.6s ease-in-out infinite; flex-shrink: 0; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.2} }
+.pb-items { display: flex; gap: 1.8rem; flex: 1; overflow: hidden; }
+.pb-item { display: flex; align-items: center; gap: 7px; white-space: nowrap; font-size: .7rem; }
+.pb-metal { color: var(--gold-lt); }
+.pb-val { color: white; font-weight: 500; font-size: .78rem; }
+.pb-chg { font-size: .63rem; padding: 1px 5px; border-radius: 3px; }
+.up   { background: rgba(74,200,100,.15); color: #7fd89a; }
+.down { background: rgba(220,80,80,.15);  color: #e89090; }
+.pb-cta { font-size: .63rem; color: var(--gold); letter-spacing: .1em; text-transform: uppercase; flex-shrink: 0; }
+
+/* ── Content area ── */
+.content { padding: 1.6rem 2rem 3rem; flex: 1; }
+
+/* ── Section headers ── */
+.section-eyebrow { font-size: .65rem; letter-spacing: .22em; text-transform: uppercase; color: var(--gold); margin-bottom: .35rem; font-weight: 500; }
+.section-title { font-family: 'Cormorant Garamond', serif; font-size: 1.7rem; font-weight: 400; color: var(--text); margin-bottom: .5rem; }
+.section-sub { font-size: .85rem; color: var(--text-mid); margin-bottom: 1.6rem; }
+
+/* ── Cards generic ── */
+.card { background: white; border: 1px solid var(--bsoft); border-radius: var(--r-lg); padding: 1.4rem; }
+.card-gold-top { border-top: 2px solid var(--gold); }
+
+/* ── Buttons ── */
+.btn { display: inline-flex; align-items: center; gap: 6px; padding: .72rem 1.6rem; border-radius: 6px; font-size: .82rem; letter-spacing: .1em; text-transform: uppercase; cursor: pointer; font-family: 'DM Sans', sans-serif; font-weight: 400; text-decoration: none; transition: all .2s; border: none; }
+.btn-gold { background: var(--gold); color: white; }
+.btn-gold:hover { background: var(--gold-dk); transform: translateY(-1px); }
+.btn-outline { background: white; border: 1.5px solid var(--gold); color: var(--gold-dk); }
+.btn-outline:hover { background: var(--gold-pale); }
+.btn-dark { background: var(--text); color: white; }
+.btn-dark:hover { background: #2a201a; transform: translateY(-1px); }
+.btn-sm { padding: .45rem 1rem; font-size: .75rem; }
+
+/* ── Form elements ── */
+.form-group { margin-bottom: 1rem; }
+.form-label { display: block; font-size: .7rem; letter-spacing: .14em; text-transform: uppercase; color: var(--text-lt); margin-bottom: .4rem; font-weight: 500; }
+.form-input, .form-select, .form-textarea {
+  width: 100%; padding: .72rem 1rem; border: 1.5px solid var(--border); border-radius: 6px;
+  font-family: 'DM Sans', sans-serif; font-size: .88rem; color: var(--text);
+  background: #fffcf5; outline: none; transition: border-color .2s, box-shadow .2s;
+}
+.form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(201,168,76,.1); background: white; }
+.form-textarea { resize: vertical; min-height: 110px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: .85rem; }
+@media(max-width:600px){ .form-row { grid-template-columns: 1fr; } }
+.msg { padding: .7rem 1rem; border-radius: 6px; font-size: .82rem; margin-bottom: 1rem; }
+.msg-ok  { background: #eaf3de; border: 1px solid #b0d890; color: #2d6d11; }
+.msg-err { background: #fcebeb; border: 1px solid #f0b0b0; color: #9a2828; }
+
+/* ── Modal ── */
+.overlay { display: none; position: fixed; inset: 0; background: rgba(20,14,10,.5); backdrop-filter: blur(4px); z-index: 300; align-items: center; justify-content: center; padding: 1rem; }
+.overlay.open { display: flex; }
+.modal-box { background: white; border-radius: 16px; border: 1px solid var(--border); width: 500px; max-width: 100%; box-shadow: var(--sh-lg); overflow: hidden; animation: modal-pop .25s cubic-bezier(.34,1.56,.64,1); }
+@keyframes modal-pop { from{opacity:0;transform:scale(.94) translateY(10px)} to{opacity:1;transform:scale(1) translateY(0)} }
+.modal-head { background: var(--text); padding: 1.1rem 1.4rem; display: flex; align-items: center; justify-content: space-between; }
+.modal-head-title { font-family: 'Cormorant Garamond', serif; font-size: 1.25rem; color: var(--gold-lt); font-weight: 400; }
+.modal-close { background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.12); width: 28px; height: 28px; border-radius: 6px; cursor: pointer; font-size: .95rem; color: rgba(255,255,255,.6); display: flex; align-items: center; justify-content: center; transition: background .2s; }
+.modal-close:hover { background: rgba(255,255,255,.16); color: white; }
+.modal-body { padding: 1.4rem; }
+
+/* ── Toast ── */
+#toastWrap { position: fixed; bottom: 1.4rem; right: 1.4rem; z-index: 400; display: flex; flex-direction: column; gap: 8px; pointer-events: none; }
+.toast { background: var(--text); color: white; padding: .65rem 1.1rem; border-radius: 8px; font-size: .8rem; display: flex; align-items: center; gap: 8px; box-shadow: var(--sh-md); transform: translateX(110%); opacity: 0; transition: all .3s cubic-bezier(.34,1.56,.64,1); pointer-events: all; }
+.toast.show { transform: translateX(0); opacity: 1; }
+
+/* ── Responsive ── */
+@media(max-width:768px){ .shell{grid-template-columns:1fr} .sidebar{position:static;height:auto} .topbar,.content{padding-left:1rem;padding-right:1rem} .price-bar{padding-left:1rem;padding-right:1rem} }
+</style>
+{% block extra_head %}{% endblock %}
+</head>
+<body>
+<div class="shell">
+  {% include 'mayin/sidebar.html' %}
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-left">
+        <h1>{% block page_title %}Mayin Jewellery{% endblock %}</h1>
+        <p>{% block page_sub %}Handcrafted gold &amp; silver · Karnataka{% endblock %}</p>
+      </div>
+      <div class="topbar-right">
+        <a href="{% url 'signin' %}" class="tb-btn tb-ghost" id="topAuthBtn">
+          <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="5" r="3"/><path d="M2 14c0-3 2.7-5 6-5s6 2 6 5"/></svg>
+          <span id="topAuthText">Sign In</span>
+        </a>
+        <a href="{% url 'cart' %}" class="tb-btn tb-gold tb-cart">
+          <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1.5 1.5h2l2 8h7l1.5-5H5"/><circle cx="6.5" cy="13" r="1"/><circle cx="11.5" cy="13" r="1"/></svg>
+          Cart
+          <span class="cart-count-badge" id="cartBadge">0</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="price-bar" onclick="openPriceModal()">
+      <div class="pb-label"><span class="ticker-dot"></span>Live Rates</div>
+      <div class="pb-items">
+        <div class="pb-item">
+          <span class="pb-metal">Gold 22K</span>
+          <span class="pb-val" id="pbGold">₹7,250/g</span>
+          <span class="pb-chg up" id="pbGoldC">▲ 0.4%</span>
+        </div>
+        <div class="pb-item">
+          <span class="pb-metal">Silver 999</span>
+          <span class="pb-val" id="pbSilver">₹88/g</span>
+          <span class="pb-chg up" id="pbSilverC">▲ 0.2%</span>
+        </div>
+      </div>
+      <div class="pb-cta">Details →</div>
+    </div>
+
+    <div class="content">{% block content %}{% endblock %}</div>
+  </div>
+</div>
+
+<!-- Price Modal -->
+<div class="overlay" id="priceModal" onclick="if(event.target===this)closePriceModal()">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div class="modal-head-title">Live Metal Rates</div>
+      <button class="modal-close" onclick="closePriceModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:1rem">
+        <div style="background:var(--cream);border:1px solid var(--bsoft);border-radius:10px;padding:1rem;border-top:2px solid var(--gold)">
+          <div style="font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--text-lt);margin-bottom:.6rem">Gold · 22K</div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:1.9rem;color:var(--text)" id="mGold">₹7,250</div>
+          <div style="font-size:.68rem;color:var(--text-lt);margin-top:2px">per gram · INR</div>
+          <div style="font-size:.8rem;color:var(--text-mid);margin-top:6px">10g: <strong id="mGold10">₹72,500</strong></div>
+          <span style="display:inline-flex;align-items:center;gap:3px;font-size:.68rem;margin-top:7px;padding:2px 7px;border-radius:100px;background:rgba(74,180,100,.1);color:#2d7a3e;border:1px solid rgba(74,180,100,.2)" id="mGoldC">▲ 0.4%</span>
+        </div>
+        <div style="background:var(--cream);border:1px solid var(--bsoft);border-radius:10px;padding:1rem;border-top:2px solid #a0a0a0">
+          <div style="font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--text-lt);margin-bottom:.6rem">Silver · 999</div>
+          <div style="font-family:'Cormorant Garamond',serif;font-size:1.9rem;color:var(--text)" id="mSilver">₹88</div>
+          <div style="font-size:.68rem;color:var(--text-lt);margin-top:2px">per gram · INR</div>
+          <div style="font-size:.8rem;color:var(--text-mid);margin-top:6px">10g: <strong id="mSilver10">₹880</strong></div>
+          <span style="display:inline-flex;align-items:center;gap:3px;font-size:.68rem;margin-top:7px;padding:2px 7px;border-radius:100px;background:rgba(74,180,100,.1);color:#2d7a3e;border:1px solid rgba(74,180,100,.2)" id="mSilverC">▲ 0.2%</span>
+        </div>
+      </div>
+      <div style="text-align:center;font-size:.68rem;color:var(--text-lt);border-top:1px solid var(--bsoft);padding-top:.8rem" id="mNote">Fetching…</div>
+    </div>
+  </div>
+</div>
+
+<div id="toastWrap"></div>
+
+<script>
+const INR = n => '₹' + Number(n).toLocaleString('en-IN');
+const getCart = () => JSON.parse(localStorage.getItem('mayinCart')||'[]');
+const saveCart = c => localStorage.setItem('mayinCart', JSON.stringify(c));
+
+function cartTotal() { return getCart().reduce((s,i)=>s+i.qty,0); }
+function updateCartBadges() {
+  const n = cartTotal();
+  document.querySelectorAll('.cart-count-badge,#sideCartBadge').forEach(el=>{
+    if(!el) return;
+    el.textContent = n;
+    el.classList.toggle('show', n>0);
+    if(el.id==='sideCartBadge') el.classList.toggle('show', n>0);
+  });
+}
+
+function addToCart(id, name, price, emoji) {
+  let c = getCart();
+  const i = c.findIndex(x=>x.id===id);
+  if(i>-1) c[i].qty++; else c.push({id,name,price,emoji,qty:1});
+  saveCart(c); updateCartBadges();
+  showToast(`${name} added to cart`, '🛒');
+}
+
+function openPriceModal()  { document.getElementById('priceModal').classList.add('open'); loadPrices(); }
+function closePriceModal() { document.getElementById('priceModal').classList.remove('open'); }
+
+async function loadPrices() {
+  try {
+    const r = await fetch("{% url 'metal_prices' %}");
+    const d = await r.json();
+    if(!d.success) throw 0;
+    const g=d.gold, s=d.silver;
+    const gp=Math.round(g.price_per_gram), sp=Math.round(s.price_per_gram);
+    document.getElementById('pbGold').textContent   = `${INR(gp)}/g`;
+    document.getElementById('pbSilver').textContent = `${INR(sp)}/g`;
+    ['pbGoldC','pbSilverC'].forEach((id,i)=>{
+      const m = i===0?g:s;
+      const el = document.getElementById(id);
+      el.textContent = (m.change_percent>=0?'▲ ':'▼ ')+Math.abs(m.change_percent).toFixed(2)+'%';
+      el.className = 'pb-chg '+(m.change_percent>=0?'up':'down');
+    });
+    document.getElementById('mGold').textContent   = INR(gp);
+    document.getElementById('mGold10').textContent = INR(Math.round(g.price_per_10g));
+    document.getElementById('mSilver').textContent   = INR(sp);
+    document.getElementById('mSilver10').textContent = INR(Math.round(s.price_per_10g));
+    const ts = d.last_updated?new Date(d.last_updated*1000).toLocaleTimeString('en-IN'):'N/A';
+    document.getElementById('mNote').textContent = `Updated: ${ts}${d.source==='fallback'?' · Approx.':''}`;
+  } catch(e) { document.getElementById('mNote').textContent='Showing approximate values'; }
+}
+
+function showToast(msg, icon='✓') {
+  const w=document.getElementById('toastWrap'), t=document.createElement('div');
+  t.className='toast'; t.innerHTML=`<span>${icon}</span>${msg}`;
+  w.appendChild(t);
+  requestAnimationFrame(()=>requestAnimationFrame(()=>t.classList.add('show')));
+  setTimeout(()=>{ t.classList.remove('show'); setTimeout(()=>t.remove(),350); }, 2600);
+}
+
+// Auth state
+(function(){
+  const u = JSON.parse(localStorage.getItem('mayinUser')||'null');
+  if(u) {
+    const t=document.getElementById('topAuthText'); if(t) t.textContent=u.first_name||'Account';
+    const a=document.getElementById('topAuthBtn'); if(a) a.href='/orders/';
+  }
+})();
+
+updateCartBadges();
+loadPrices();
+setInterval(loadPrices, 60000);
+</script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

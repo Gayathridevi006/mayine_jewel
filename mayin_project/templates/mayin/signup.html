@@ -1,0 +1,206 @@
+{% extends 'mayin/base.html' %}
+{% block title %}Create Account — mayin Jewellery{% endblock %}
+
+{% block extra_head %}
+<style>
+  nav { display: none; }
+  *, *::before, *::after { box-sizing: border-box; }
+  body { background: linear-gradient(135deg, #fdf8f0 0%, #f5ebe0 100%); font-family: 'Jost', sans-serif; min-height: 100vh; display: flex; flex-direction: column; }
+
+  .auth-wrap { flex: 1; display: flex; align-items: center; justify-content: center; padding: 2rem; }
+  .auth-card { background: white; border: 1px solid #e8d8c8; border-radius: 16px; width: 100%; max-width: 440px; padding: 2.5rem 2.5rem 2rem; }
+
+  .auth-logo { text-align: center; margin-bottom: 1.8rem; }
+  .auth-logo-text { font-family: 'Cormorant Garamond', serif; font-size: 2rem; font-weight: 600; color: #9e7a2a; letter-spacing: 0.1em; display: block; }
+  .auth-logo-sub { font-size: 0.68rem; color: #b8a090; letter-spacing: 0.18em; text-transform: uppercase; }
+
+  .auth-title { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; font-weight: 400; color: #3a2e28; margin-bottom: 0.3rem; text-align: center; }
+  .auth-sub { font-size: 0.82rem; color: #a09080; text-align: center; margin-bottom: 1.8rem; }
+
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+  .form-group { margin-bottom: 1rem; }
+  label { display: block; font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; color: #a09080; margin-bottom: 0.4rem; }
+  input[type=email], input[type=password], input[type=text], input[type=tel] { width: 100%; padding: 0.75rem 1rem; border: 1.5px solid #e8d8c8; border-radius: 6px; font-family: 'Jost', sans-serif; font-size: 0.9rem; color: #4a3c34; background: #fffaf4; outline: none; transition: border-color 0.2s, box-shadow 0.2s; }
+  input:focus { border-color: #c9a84c; box-shadow: 0 0 0 3px rgba(201,168,76,0.1); background: white; }
+  select { width: 100%; padding: 0.75rem 1rem; border: 1.5px solid #e8d8c8; border-radius: 6px; font-family: 'Jost', sans-serif; font-size: 0.9rem; color: #4a3c34; background: #fffaf4; outline: none; cursor: pointer; }
+  select:focus { border-color: #c9a84c; }
+
+  .password-strength { margin-top: 6px; }
+  .strength-bar { height: 3px; border-radius: 2px; background: #e8d8c8; overflow: hidden; }
+  .strength-fill { height: 100%; border-radius: 2px; transition: width 0.3s, background 0.3s; width: 0%; }
+  .strength-text { font-size: 0.68rem; color: #b8a090; margin-top: 3px; }
+
+  .terms-row { display: flex; align-items: flex-start; gap: 0.7rem; margin: 1rem 0; }
+  .terms-row input[type=checkbox] { width: 16px; height: 16px; flex-shrink: 0; accent-color: #c9a84c; margin-top: 2px; }
+  .terms-text { font-size: 0.78rem; color: #7a6a60; line-height: 1.5; }
+  .terms-text a { color: #9e7a2a; text-decoration: none; }
+
+  .auth-btn { width: 100%; padding: 1rem; background: #c9a84c; color: white; border: none; border-radius: 6px; font-family: 'Jost', sans-serif; font-size: 0.85rem; letter-spacing: 0.18em; text-transform: uppercase; cursor: pointer; transition: background 0.2s, transform 0.15s; }
+  .auth-btn:hover { background: #9e7a2a; transform: translateY(-1px); }
+  .auth-btn:disabled { background: #c8b8a8; cursor: not-allowed; transform: none; }
+
+  .divider { display: flex; align-items: center; gap: 1rem; margin: 1.3rem 0; }
+  .divider-line { flex: 1; height: 1px; background: #e8d8c8; }
+  .divider-text { font-size: 0.72rem; color: #b8a090; }
+
+  .google-btn { width: 100%; padding: 0.85rem; background: white; border: 1.5px solid #e8d8c8; border-radius: 6px; font-family: 'Jost', sans-serif; font-size: 0.85rem; color: #4a3c34; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: border-color 0.2s, background 0.2s; }
+  .google-btn:hover { border-color: #c9a84c; background: #fffaf4; }
+
+  .auth-footer { text-align: center; font-size: 0.82rem; color: #a09080; margin-top: 1.5rem; }
+  .auth-footer a { color: #9e7a2a; text-decoration: none; font-weight: 500; }
+
+  .error-msg { background: #fcebeb; border: 1px solid #f0b0b0; color: #a32d2d; font-size: 0.82rem; padding: 0.7rem 1rem; border-radius: 6px; margin-bottom: 1rem; display: none; }
+  .error-msg.show { display: block; }
+  .success-msg { background: #eaf3de; border: 1px solid #b0d890; color: #3b6d11; font-size: 0.82rem; padding: 0.7rem 1rem; border-radius: 6px; margin-bottom: 1rem; display: none; }
+  .success-msg.show { display: block; }
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<div class="auth-wrap">
+  <div class="auth-card">
+    <div class="auth-logo">
+      <a href="{% url 'home' %}" style="text-decoration:none">
+        <span class="auth-logo-text">mayin</span>
+        <span class="auth-logo-sub">Jewellery</span>
+      </a>
+    </div>
+
+    <h1 class="auth-title">Create Account</h1>
+    <p class="auth-sub">Join mayin and discover handcrafted jewellery</p>
+
+    <div class="error-msg" id="errorMsg"></div>
+    <div class="success-msg" id="successMsg"></div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>First Name</label>
+        <input type="text" id="firstName" placeholder="Priya" autocomplete="given-name">
+      </div>
+      <div class="form-group">
+        <label>Last Name</label>
+        <input type="text" id="lastName" placeholder="Sharma" autocomplete="family-name">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Email Address</label>
+      <input type="email" id="email" placeholder="you@example.com" autocomplete="email">
+    </div>
+
+    <div class="form-group">
+      <label>Phone Number</label>
+      <input type="tel" id="phone" placeholder="+91 98XXXXXXXX" autocomplete="tel">
+    </div>
+
+    <div class="form-group">
+      <label>City (Karnataka)</label>
+      <select id="city">
+        <option value="">Select your city</option>
+        <option>Bengaluru</option><option>Mysuru</option><option>Mangaluru</option>
+        <option>Hubballi</option><option>Dharwad</option><option>Belagavi</option>
+        <option>Shivamogga</option><option>Tumakuru</option><option>Other</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Password</label>
+      <input type="password" id="password" placeholder="Min. 8 characters" autocomplete="new-password" oninput="checkStrength(this.value)">
+      <div class="password-strength">
+        <div class="strength-bar"><div class="strength-fill" id="strengthFill"></div></div>
+        <div class="strength-text" id="strengthText"></div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Confirm Password</label>
+      <input type="password" id="confirmPassword" placeholder="Re-enter password" autocomplete="new-password">
+    </div>
+
+    <div class="terms-row">
+      <input type="checkbox" id="terms">
+      <span class="terms-text">I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a>. I consent to be contacted about orders and offers.</span>
+    </div>
+
+    <button class="auth-btn" id="signupBtn" onclick="doSignup()">Create Account</button>
+
+    <div class="divider">
+      <div class="divider-line"></div>
+      <span class="divider-text">or</span>
+      <div class="divider-line"></div>
+    </div>
+
+    <button class="google-btn">
+      <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+      Sign up with Google
+    </button>
+
+    <div class="auth-footer">
+      Already have an account? <a href="{% url 'signin' %}">Sign In</a>
+    </div>
+  </div>
+</div>
+
+<script>
+  function checkStrength(pw) {
+    const fill = document.getElementById('strengthFill');
+    const text = document.getElementById('strengthText');
+    let score = 0;
+    if (pw.length >= 8) score++;
+    if (/[A-Z]/.test(pw)) score++;
+    if (/[0-9]/.test(pw)) score++;
+    if (/[^A-Za-z0-9]/.test(pw)) score++;
+    const levels = [
+      { w: '0%',   bg: '#e8d8c8', t: '' },
+      { w: '25%',  bg: '#e24b4a', t: 'Weak' },
+      { w: '50%',  bg: '#ef9f27', t: 'Fair' },
+      { w: '75%',  bg: '#c9a84c', t: 'Good' },
+      { w: '100%', bg: '#3b6d11', t: 'Strong' },
+    ];
+    const l = levels[score];
+    fill.style.width = l.w; fill.style.background = l.bg;
+    text.textContent = l.t; text.style.color = l.bg;
+  }
+
+  async function doSignup() {
+    const btn = document.getElementById('signupBtn');
+    const errEl = document.getElementById('errorMsg');
+    const sucEl = document.getElementById('successMsg');
+    errEl.classList.remove('show'); sucEl.classList.remove('show');
+    const firstName = document.getElementById('firstName').value.trim();
+    const lastName  = document.getElementById('lastName').value.trim();
+    const email     = document.getElementById('email').value.trim();
+    const phone     = document.getElementById('phone').value.trim();
+    const city      = document.getElementById('city').value;
+    const password  = document.getElementById('password').value;
+    const confirm   = document.getElementById('confirmPassword').value;
+    const terms     = document.getElementById('terms').checked;
+    if (!firstName || !email || !password) { errEl.textContent = 'Please fill in all required fields.'; errEl.classList.add('show'); return; }
+    if (password !== confirm) { errEl.textContent = 'Passwords do not match.'; errEl.classList.add('show'); return; }
+    if (password.length < 8) { errEl.textContent = 'Password must be at least 8 characters.'; errEl.classList.add('show'); return; }
+    if (!terms) { errEl.textContent = 'Please accept the Terms of Service.'; errEl.classList.add('show'); return; }
+    btn.disabled = true; btn.textContent = 'Creating account…';
+    try {
+      const res = await fetch('http://localhost:8001/api/auth/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ first_name: firstName, last_name: lastName, email, phone, city, password })
+      });
+      const data = await res.json();
+      if (res.ok && data.access_token) {
+        localStorage.setItem('mayinToken', data.access_token);
+        localStorage.setItem('mayinUser', JSON.stringify(data.user));
+        sucEl.textContent = '✓ Account created! Redirecting…'; sucEl.classList.add('show');
+        setTimeout(() => window.location.href = '/', 1200);
+      } else {
+        errEl.textContent = data.detail || 'Registration failed. Please try again.'; errEl.classList.add('show');
+        btn.disabled = false; btn.textContent = 'Create Account';
+      }
+    } catch(e) {
+      errEl.textContent = 'Could not connect to server. Please try again.'; errEl.classList.add('show');
+      btn.disabled = false; btn.textContent = 'Create Account';
+    }
+  }
+</script>
+{% endblock %}

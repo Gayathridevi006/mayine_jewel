@@ -1,0 +1,212 @@
+{% extends 'mayin/base.html' %}
+{% block title %}Your Cart — mayin Jewellery{% endblock %}
+
+{% block extra_head %}
+<style>
+  nav { display: none; }
+  *, *::before, *::after { box-sizing: border-box; }
+  body { background: #fdf8f0; font-family: 'Jost', sans-serif; color: #4a3c34; }
+
+  .topbar { background: #fff9f2; border-bottom: 1px solid #e8d8c8; padding: 0 2rem; height: 60px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 50; }
+  .topbar-brand { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-weight: 600; color: #9e7a2a; text-decoration: none; letter-spacing: 0.08em; }
+  .topbar-actions { display: flex; align-items: center; gap: 1rem; }
+  .topbar-link { font-size: 0.8rem; color: #7a6a60; text-decoration: none; }
+  .topbar-link:hover { color: #9e7a2a; }
+
+  .cart-page { max-width: 1060px; margin: 0 auto; padding: 2rem; }
+  .cart-header { margin-bottom: 2rem; }
+  .cart-title { font-family: 'Cormorant Garamond', serif; font-size: 2rem; font-weight: 400; color: #3a2e28; }
+  .cart-sub { font-size: 0.82rem; color: #a09080; margin-top: 3px; }
+
+  .cart-layout { display: grid; grid-template-columns: 1fr 340px; gap: 2rem; align-items: start; }
+  @media(max-width:768px){ .cart-layout { grid-template-columns: 1fr; } }
+
+  /* Cart items */
+  .cart-items { background: white; border: 1px solid #e8d8c8; border-radius: 10px; overflow: hidden; }
+  .cart-items-header { padding: 1rem 1.5rem; border-bottom: 1px solid #e8d8c8; display: grid; grid-template-columns: 3fr 1fr 1fr 1fr; gap: 1rem; font-size: 0.68rem; letter-spacing: 0.15em; text-transform: uppercase; color: #b8a090; }
+  .cart-item { padding: 1.2rem 1.5rem; border-bottom: 1px solid #f0e8dc; display: grid; grid-template-columns: 3fr 1fr 1fr 1fr; gap: 1rem; align-items: center; transition: background 0.15s; }
+  .cart-item:last-child { border-bottom: none; }
+  .cart-item:hover { background: #fffaf4; }
+  .item-info { display: flex; align-items: center; gap: 1rem; }
+  .item-emoji { width: 56px; height: 56px; background: #fdf3e7; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; flex-shrink: 0; }
+  .item-name { font-size: 0.9rem; font-weight: 500; color: #3a2e28; margin-bottom: 3px; }
+  .item-cat { font-size: 0.72rem; color: #b8a090; }
+  .item-price { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; color: #9e7a2a; }
+  .qty-control { display: flex; align-items: center; border: 1px solid #e8d8c8; border-radius: 6px; overflow: hidden; width: fit-content; }
+  .qty-btn { background: #fff9f2; border: none; width: 30px; height: 30px; font-size: 1rem; cursor: pointer; color: #7a6a60; }
+  .qty-btn:hover { background: #fdf3e7; }
+  .qty-num { width: 36px; text-align: center; font-size: 0.88rem; font-weight: 500; border-left: 1px solid #e8d8c8; border-right: 1px solid #e8d8c8; height: 30px; display: flex; align-items: center; justify-content: center; }
+  .item-subtotal { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; color: #3a2e28; font-weight: 600; }
+  .remove-btn { background: none; border: none; cursor: pointer; color: #c8a090; font-size: 1.1rem; padding: 4px; border-radius: 4px; transition: color 0.15s; }
+  .remove-btn:hover { color: #a32d2d; }
+
+  .empty-cart { padding: 4rem 2rem; text-align: center; }
+  .empty-icon { font-size: 3.5rem; margin-bottom: 1rem; }
+  .empty-title { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; color: #3a2e28; margin-bottom: 0.5rem; }
+  .empty-sub { font-size: 0.85rem; color: #a09080; margin-bottom: 1.5rem; }
+  .btn-shop { display: inline-block; background: #c9a84c; color: white; padding: 0.75rem 2rem; border-radius: 6px; text-decoration: none; font-size: 0.82rem; letter-spacing: 0.15em; text-transform: uppercase; }
+  .btn-shop:hover { background: #9e7a2a; }
+
+  /* Order summary */
+  .order-summary { background: white; border: 1px solid #e8d8c8; border-radius: 10px; padding: 1.5rem; position: sticky; top: 80px; }
+  .summary-title { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; color: #3a2e28; margin-bottom: 1.2rem; }
+  .summary-row { display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; font-size: 0.88rem; color: #7a6a60; }
+  .summary-row.total { border-top: 1px solid #e8d8c8; margin-top: 0.5rem; padding-top: 1rem; font-size: 1rem; font-weight: 500; color: #3a2e28; }
+  .summary-row.total .val { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; color: #9e7a2a; }
+  .summary-divider { border: none; border-top: 1px solid #f0e8dc; margin: 0.5rem 0; }
+  .promo-row { display: flex; gap: 8px; margin: 1rem 0; }
+  .promo-input { flex: 1; padding: 0.6rem 0.9rem; border: 1px solid #e8d8c8; border-radius: 6px; font-family: 'Jost', sans-serif; font-size: 0.82rem; color: #4a3c34; background: #fffaf4; outline: none; }
+  .promo-input:focus { border-color: #c9a84c; }
+  .promo-btn { background: #fdf3e7; border: 1px solid #e8c97a; color: #9e7a2a; padding: 0.6rem 0.9rem; border-radius: 6px; font-size: 0.78rem; cursor: pointer; font-family: 'Jost', sans-serif; white-space: nowrap; }
+  .checkout-btn { width: 100%; padding: 1rem; background: #c9a84c; color: white; border: none; border-radius: 6px; font-family: 'Jost', sans-serif; font-size: 0.85rem; letter-spacing: 0.18em; text-transform: uppercase; cursor: pointer; transition: background 0.2s; margin-top: 1rem; }
+  .checkout-btn:hover { background: #9e7a2a; }
+  .checkout-note { font-size: 0.7rem; color: #b8a090; text-align: center; margin-top: 0.8rem; line-height: 1.5; }
+  .free-ship-note { background: #eaf3de; color: #3b6d11; font-size: 0.75rem; padding: 0.5rem 0.8rem; border-radius: 6px; margin-top: 0.8rem; text-align: center; }
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<header class="topbar">
+  <a href="{% url 'home' %}" class="topbar-brand">mayin</a>
+  <div class="topbar-actions">
+    <a href="{% url 'home' %}" class="topbar-link">← Continue Shopping</a>
+    <a href="{% url 'signin' %}" class="topbar-link">Sign In</a>
+  </div>
+</header>
+
+<div class="cart-page">
+  <div class="cart-header">
+    <h1 class="cart-title">Your Cart</h1>
+    <p class="cart-sub" id="cartSub">Loading…</p>
+  </div>
+
+  <div class="cart-layout" id="cartLayout">
+    <!-- Filled by JS -->
+  </div>
+</div>
+
+<script>
+  const inr = n => '₹' + Number(n).toLocaleString('en-IN');
+
+  function getCart() {
+    return JSON.parse(localStorage.getItem('mayinCart') || '[]');
+  }
+  function saveCart(cart) {
+    localStorage.setItem('mayinCart', JSON.stringify(cart));
+  }
+
+  function removeItem(id) {
+    let cart = getCart().filter(i => i.id !== id);
+    saveCart(cart); renderCart();
+  }
+
+  function updateQty(id, delta) {
+    let cart = getCart();
+    const idx = cart.findIndex(i => i.id === id);
+    if (idx > -1) {
+      cart[idx].qty = Math.max(1, cart[idx].qty + delta);
+      if (cart[idx].qty === 0) cart.splice(idx, 1);
+    }
+    saveCart(cart); renderCart();
+  }
+
+  function renderCart() {
+    const cart = getCart();
+    const layout = document.getElementById('cartLayout');
+    const sub = document.getElementById('cartSub');
+
+    if (cart.length === 0) {
+      sub.textContent = '0 items';
+      layout.innerHTML = `
+        <div class="cart-items" style="grid-column:1/-1">
+          <div class="empty-cart">
+            <div class="empty-icon">🛒</div>
+            <div class="empty-title">Your cart is empty</div>
+            <div class="empty-sub">Looks like you haven't added any jewellery yet.</div>
+            <a href="/" class="btn-shop">Shop Now</a>
+          </div>
+        </div>`;
+      return;
+    }
+
+    const subtotal = cart.reduce((s, i) => s + i.price * i.qty, 0);
+    const shipping = subtotal >= 50000 ? 0 : 299;
+    const total = subtotal + shipping;
+    const itemCount = cart.reduce((s, i) => s + i.qty, 0);
+    sub.textContent = `${itemCount} item${itemCount > 1 ? 's' : ''}`;
+
+    const itemsHtml = cart.map(item => `
+      <div class="cart-item">
+        <div class="item-info">
+          <div class="item-emoji">${item.emoji}</div>
+          <div>
+            <div class="item-name">${item.name}</div>
+            <div class="item-cat">mayin Jewellery</div>
+          </div>
+        </div>
+        <div class="item-price">${inr(item.price)}</div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <div class="qty-control">
+            <button class="qty-btn" onclick="updateQty(${item.id},-1)">−</button>
+            <div class="qty-num">${item.qty}</div>
+            <button class="qty-btn" onclick="updateQty(${item.id},1)">+</button>
+          </div>
+          <button class="remove-btn" onclick="removeItem(${item.id})" title="Remove">✕</button>
+        </div>
+        <div class="item-subtotal">${inr(item.price * item.qty)}</div>
+      </div>`).join('');
+
+    layout.innerHTML = `
+      <div>
+        <div class="cart-items">
+          <div class="cart-items-header">
+            <span>Product</span><span>Price</span><span>Quantity</span><span>Subtotal</span>
+          </div>
+          ${itemsHtml}
+        </div>
+      </div>
+      <div>
+        <div class="order-summary">
+          <div class="summary-title">Order Summary</div>
+          <div class="summary-row"><span>Subtotal (${itemCount} items)</span><span>${inr(subtotal)}</span></div>
+          <div class="summary-row"><span>Shipping</span><span>${shipping === 0 ? '<span style="color:#3b6d11">Free</span>' : inr(shipping)}</span></div>
+          <div class="summary-row"><span>GST (3%)</span><span>${inr(Math.round(subtotal * 0.03))}</span></div>
+          <div class="summary-row total"><span>Total</span><span class="val">${inr(total + Math.round(subtotal * 0.03))}</span></div>
+          <div class="promo-row">
+            <input class="promo-input" placeholder="Promo code" id="promoInput">
+            <button class="promo-btn">Apply</button>
+          </div>
+          <button class="checkout-btn" onclick="checkout()">Proceed to Checkout</button>
+          <div class="free-ship-note">🎁 Free shipping on orders above ₹50,000</div>
+          <p class="checkout-note">Secure checkout &bull; GST included &bull; Delivery across Karnataka</p>
+        </div>
+      </div>`;
+  }
+
+  function checkout() {
+    const cart = getCart();
+    if (!cart.length) return;
+    // POST to FastAPI checkout endpoint
+    fetch('http://localhost:8001/api/orders/checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + (localStorage.getItem('mayinToken') || '') },
+      body: JSON.stringify({ items: cart })
+    })
+    .then(r => r.json())
+    .then(d => {
+      if (d.order_id) {
+        alert('Order placed! Order ID: ' + d.order_id);
+        localStorage.removeItem('mayinCart');
+        renderCart();
+      } else {
+        alert(d.detail || 'Please sign in to checkout.');
+        window.location.href = '/signin/';
+      }
+    })
+    .catch(() => alert('Please sign in to complete your order.'));
+  }
+
+  renderCart();
+</script>
+{% endblock %}

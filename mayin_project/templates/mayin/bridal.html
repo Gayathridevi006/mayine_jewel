@@ -1,0 +1,146 @@
+{% extends 'mayin/base.html' %}
+{% block title %}Bridal Studio — Mayin Jewellery{% endblock %}
+{% block page_title %}Bridal Studio{% endblock %}
+{% block page_sub %}Your perfect bridal set, crafted to last a lifetime{% endblock %}
+
+{% block extra_head %}
+<style>
+.bridal-hero {
+  background: linear-gradient(135deg, #fdf3e7 0%, #f9ece0 50%, #fdf0e8 100%);
+  border-radius: var(--r-lg); padding: 2.5rem 2rem 2rem; margin-bottom: 2rem;
+  border: 1px solid var(--bsoft); position: relative; overflow: hidden;
+}
+.bridal-hero::before {
+  content: ''; position: absolute; top: -40px; right: -40px;
+  width: 200px; height: 200px; border-radius: 50%;
+  background: rgba(201,168,76,.07);
+}
+.bridal-hero .eyebrow { font-size: .68rem; letter-spacing: .28em; text-transform: uppercase; color: var(--gold); margin-bottom: .5rem; }
+.bridal-hero h2 { font-family: 'Cormorant Garamond', serif; font-size: 2.2rem; font-weight: 300; color: var(--text); line-height: 1.15; margin-bottom: .8rem; }
+.bridal-hero h2 em { font-style: italic; color: var(--gold-dk); }
+.bridal-hero p { font-size: .88rem; color: var(--text-mid); max-width: 540px; margin-bottom: 1.5rem; }
+.bridal-hero-btns { display: flex; gap: .75rem; flex-wrap: wrap; }
+.bridal-phone { display: inline-flex; align-items: center; gap: 6px; font-size: .88rem; font-weight: 500; color: var(--gold-dk); background: white; border: 1.5px solid var(--border); padding: .65rem 1.2rem; border-radius: 6px; text-decoration: none; }
+.bridal-phone:hover { border-color: var(--gold); background: var(--gold-pale); }
+
+.steps-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2rem; }
+@media(max-width:800px){ .steps-row { grid-template-columns: 1fr 1fr; } }
+.step-card { background: white; border: 1px solid var(--bsoft); border-radius: var(--r); padding: 1.2rem; text-align: center; position: relative; }
+.step-num { width: 32px; height: 32px; border-radius: 50%; background: var(--gold); color: white; font-size: .8rem; font-weight: 600; display: flex; align-items: center; justify-content: center; margin: 0 auto .75rem; }
+.step-icon { font-size: 1.6rem; display: block; margin-bottom: .5rem; }
+.step-title { font-size: .85rem; font-weight: 500; color: var(--text); margin-bottom: .3rem; }
+.step-desc { font-size: .73rem; color: var(--text-lt); }
+
+.sets-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.1rem; margin-bottom: 2rem; }
+@media(max-width:860px){ .sets-grid { grid-template-columns: 1fr 1fr; } }
+.set-card { background: white; border: 1px solid var(--bsoft); border-radius: var(--r-lg); overflow: hidden; transition: all .22s var(--ease); cursor: pointer; }
+.set-card:hover { transform: translateY(-3px); box-shadow: var(--sh-md); border-color: rgba(201,168,76,.4); }
+.set-thumb { height: 150px; background: var(--blush); display: flex; align-items: center; justify-content: center; font-size: 3.5rem; }
+.set-body { padding: .9rem 1rem 1rem; }
+.set-badge { display: inline-block; font-size: .6rem; padding: 2px 8px; border-radius: 100px; background: var(--gold-pale); color: var(--gold-dk); margin-bottom: .4rem; border: 1px solid rgba(201,168,76,.2); }
+.set-name { font-size: .9rem; font-weight: 500; color: var(--text); margin-bottom: 3px; }
+.set-pieces { font-size: .72rem; color: var(--text-lt); margin-bottom: .6rem; }
+.set-price { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; color: var(--gold-dk); }
+.set-add { float: right; background: var(--text); color: white; border: none; padding: .38rem .85rem; border-radius: 5px; font-size: .7rem; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: background .2s; }
+.set-add:hover { background: var(--gold-dk); }
+
+.testimonials-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 2rem; }
+@media(max-width:800px){ .testimonials-row { grid-template-columns: 1fr; } }
+.testi-card { background: white; border: 1px solid var(--bsoft); border-radius: var(--r); padding: 1.2rem; }
+.testi-quote { font-family: 'Cormorant Garamond', serif; font-size: 2.5rem; color: var(--gold-lt); line-height: 1; margin-bottom: .3rem; }
+.testi-text { font-size: .82rem; color: var(--text-mid); font-style: italic; margin-bottom: .8rem; line-height: 1.65; }
+.testi-name { font-size: .78rem; font-weight: 500; color: var(--text); }
+.testi-loc  { font-size: .7rem; color: var(--text-lt); }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- Hero -->
+<div class="bridal-hero">
+  <div class="eyebrow">Bridal Studio</div>
+  <h2>Your Dream Bridal Set,<br><em>Made to Order</em></h2>
+  <p>Our master goldsmith crafts each bridal set personally — from traditional Karnataka temple designs to contemporary fusion sets. Every piece is made to fit you perfectly.</p>
+  <div class="bridal-hero-btns">
+    <a href="{% url 'custom_order' %}" class="btn btn-gold">Design Your Set</a>
+    <a href="tel:+919845024348" class="bridal-phone">
+      <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 2h3l1.5 3.5-2 1.2A9 9 0 008.3 10l1.2-2L13 9.5V13a1 1 0 01-1 1C5.4 14 2 7.6 2 3a1 1 0 011-1z"/></svg>
+      +91 9845024348
+    </a>
+  </div>
+</div>
+
+<!-- Process steps -->
+<p class="section-eyebrow">Our Process</p>
+<h2 class="section-title" style="margin-bottom:1.1rem">How it Works</h2>
+<div class="steps-row">
+  <div class="step-card">
+    <div class="step-num">1</div>
+    <span class="step-icon">📞</span>
+    <div class="step-title">Consultation</div>
+    <div class="step-desc">Call or visit us. Share your vision, budget, and occasion details.</div>
+  </div>
+  <div class="step-card">
+    <div class="step-num">2</div>
+    <span class="step-icon">✏️</span>
+    <div class="step-title">Design Sketch</div>
+    <div class="step-desc">Our goldsmith creates a custom sketch and 3D wax model for approval.</div>
+  </div>
+  <div class="step-card">
+    <div class="step-num">3</div>
+    <span class="step-icon">🔨</span>
+    <div class="step-title">Handcrafting</div>
+    <div class="step-desc">We craft your piece in 22K gold with traditional Karnataka techniques.</div>
+  </div>
+  <div class="step-card">
+    <div class="step-num">4</div>
+    <span class="step-icon">💝</span>
+    <div class="step-title">Delivery</div>
+    <div class="step-desc">Delivered with hallmark certificate and custom gift packaging.</div>
+  </div>
+</div>
+
+<!-- Ready sets -->
+<p class="section-eyebrow">Ready Collections</p>
+<h2 class="section-title" style="margin-bottom:1.1rem">Bridal Sets</h2>
+<div class="sets-grid">
+  {% for p in bridal_products %}
+  <div class="set-card" onclick="window.location='/product/{{ p.id }}/'">
+    <div class="set-thumb">{{ p.emoji }}</div>
+    <div class="set-body">
+      <div class="set-badge">{{ p.badge }}</div>
+      <div class="set-name">{{ p.name }}</div>
+      <div class="set-pieces">{{ p.weight }} · {{ p.purity }}</div>
+      <div class="set-price">₹{{ p.price|floatformat:0 }}
+        <button class="set-add" onclick="event.stopPropagation();addToCart({{ p.id }},'{{ p.name }}',{{ p.price }},'{{ p.emoji }}')">+ Cart</button>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+<!-- Testimonials -->
+<p class="section-eyebrow">Bride Stories</p>
+<h2 class="section-title" style="margin-bottom:1.1rem">Happy Couples</h2>
+<div class="testimonials-row">
+  <div class="testi-card">
+    <div class="testi-quote">"</div>
+    <div class="testi-text">My bridal set from Mayin was beyond anything I imagined. The craftsmanship, the weight, the finish — everything was perfect for my wedding day.</div>
+    <div class="testi-name">Priya Sharma</div>
+    <div class="testi-loc">Bengaluru · 2024</div>
+  </div>
+  <div class="testi-card">
+    <div class="testi-quote">"</div>
+    <div class="testi-text">We ordered a custom set for my sister's wedding. The goldsmith incorporated family motifs into the necklace. Priceless memory.</div>
+    <div class="testi-name">Kavitha Reddy</div>
+    <div class="testi-loc">Mysuru · 2024</div>
+  </div>
+  <div class="testi-card">
+    <div class="testi-quote">"</div>
+    <div class="testi-text">Affordable for the quality. Comparable to Tanishq but twice the craftsmanship and half the making charges. Will recommend to everyone.</div>
+    <div class="testi-name">Deepa Nair</div>
+    <div class="testi-loc">Mangaluru · 2023</div>
+  </div>
+</div>
+
+{% endblock %}

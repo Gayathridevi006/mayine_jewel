@@ -1,0 +1,133 @@
+{% extends 'mayin/base.html' %}
+{% block title %}Wishlist — Mayin Jewellery{% endblock %}
+{% block page_title %}My Wishlist{% endblock %}
+{% block page_sub %}Your saved jewellery pieces{% endblock %}
+
+{% block extra_head %}
+<style>
+.wl-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+@media(max-width:1100px){ .wl-grid { grid-template-columns: repeat(3, 1fr); } }
+@media(max-width:760px) { .wl-grid { grid-template-columns: repeat(2, 1fr); } }
+
+.wl-card { background: white; border: 1px solid var(--bsoft); border-radius: var(--r-lg); overflow: hidden; transition: all .22s var(--ease); }
+.wl-card:hover { transform: translateY(-3px); box-shadow: var(--sh-md); border-color: rgba(201,168,76,.4); }
+.wl-thumb { height: 150px; background: var(--blush); display: flex; align-items: center; justify-content: center; font-size: 3rem; position: relative; }
+.wl-remove { position: absolute; top: 8px; right: 8px; background: rgba(255,255,255,.9); border: 1px solid var(--border); width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: .8rem; color: #c84050; transition: all .2s; }
+.wl-remove:hover { background: #c84050; color: white; }
+.wl-body { padding: .9rem 1rem; }
+.wl-badge { display: inline-block; font-size: .6rem; padding: 2px 7px; border-radius: 100px; background: var(--gold-pale); color: var(--gold-dk); margin-bottom: .4rem; border: 1px solid rgba(201,168,76,.2); }
+.wl-name  { font-size: .87rem; font-weight: 500; color: var(--text); margin-bottom: 3px; }
+.wl-desc  { font-size: .72rem; color: var(--text-lt); margin-bottom: .7rem; }
+.wl-footer { display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--bsoft); padding-top: .65rem; }
+.wl-price { font-family: 'Cormorant Garamond', serif; font-size: 1.15rem; color: var(--gold-dk); }
+.wl-add   { background: var(--text); color: white; border: none; padding: .35rem .85rem; border-radius: 5px; font-size: .7rem; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: background .2s; }
+.wl-add:hover { background: var(--gold-dk); }
+
+.wl-empty { text-align: center; padding: 3rem 1rem; background: white; border: 1px solid var(--bsoft); border-radius: var(--r-lg); }
+.wl-empty .emo { font-size: 3rem; margin-bottom: 1rem; }
+.wl-empty h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; font-weight: 400; color: var(--text); margin-bottom: .5rem; }
+.wl-empty p { font-size: .85rem; color: var(--text-mid); margin-bottom: 1.4rem; }
+
+.wl-summary { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.2rem; flex-wrap: wrap; gap: .5rem; }
+.wl-count { font-size: .82rem; color: var(--text-mid); }
+.wl-actions { display: flex; gap: .6rem; }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="wl-summary">
+  <div>
+    <p class="section-eyebrow">Saved Items</p>
+    <h2 class="section-title" style="margin-bottom:0" id="wlTitle">Wishlist</h2>
+  </div>
+  <div class="wl-actions">
+    <button class="btn btn-gold" onclick="addAllToCart()">Add All to Cart</button>
+    <button class="btn btn-outline" onclick="clearWishlist()">Clear All</button>
+  </div>
+</div>
+
+<div id="wlRoot"></div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const INR = n => '₹' + Number(n).toLocaleString('en-IN');
+
+const ALL_PRODUCTS = [
+  {id:1,  name:'Lakshmi Temple Necklace', badge:'22K Gold',        price:128500, emoji:'📿', desc:'Traditional Karnataka design'},
+  {id:2,  name:'Bridal Kangan Set',       badge:'Bridal',          price:125000, emoji:'💛', desc:'Handcrafted 22K gold pair'},
+  {id:3,  name:'Silver Filigree Jhumkas', badge:'Sterling Silver', price:3200,   emoji:'✨', desc:'Delicate handwoven earrings'},
+  {id:4,  name:'Gold Mangalsutra',        badge:'22K Gold',        price:32000,  emoji:'🔮', desc:'Traditional 22K gold chain'},
+  {id:5,  name:'Custom Name Pendant',     badge:'Custom',          price:8500,   emoji:'🛠️',desc:'Gold · personalised letters'},
+  {id:6,  name:'Silver Anklet Pair',      badge:'Sterling Silver', price:2800,   emoji:'🌙', desc:'Handcrafted 925 silver'},
+  {id:7,  name:'Bridal Nath',             badge:'Bridal',          price:18000,  emoji:'💍', desc:'22K with pearl finish'},
+  {id:8,  name:'Gold Kada Bangle',        badge:'22K Gold',        price:68000,  emoji:'🌀', desc:'Heavy plain gold kada'},
+  {id:9,  name:'Silver Pooja Thali Set',  badge:'Sterling Silver', price:12500,  emoji:'🪔', desc:'Pure 999 silver thali'},
+  {id:10, name:'Custom Ring Design',      badge:'Custom',          price:15000,  emoji:'💎', desc:'Gold · your design'},
+  {id:11, name:'Bridal Full Set',         badge:'Bridal',          price:285000, emoji:'👑', desc:'Necklace + bangles + earrings'},
+  {id:12, name:'Silver Waist Chain',      badge:'Sterling Silver', price:7800,   emoji:'⛓️', desc:'Traditional vaddanam style'},
+];
+
+function getWl() { return JSON.parse(localStorage.getItem('mayinWishlist') || '[]'); }
+function saveWl(w) { localStorage.setItem('mayinWishlist', JSON.stringify(w)); }
+
+function renderWishlist() {
+  const wl = getWl();
+  const root = document.getElementById('wlRoot');
+  const title = document.getElementById('wlTitle');
+  const items = ALL_PRODUCTS.filter(p => wl.includes(p.id));
+  title.textContent = `Wishlist (${items.length})`;
+
+  if (!items.length) {
+    root.innerHTML = `
+      <div class="wl-empty">
+        <div class="emo">♡</div>
+        <h3>Your wishlist is empty</h3>
+        <p>Browse our collection and tap the heart icon to save pieces you love.</p>
+        <a href="/" class="btn btn-gold">Explore Collection</a>
+      </div>`; return;
+  }
+
+  root.innerHTML = `<div class="wl-grid">` + items.map(p => `
+    <div class="wl-card" id="wlc-${p.id}">
+      <div class="wl-thumb">
+        <span>${p.emoji}</span>
+        <button class="wl-remove" onclick="removeFromWl(${p.id})" title="Remove">✕</button>
+      </div>
+      <div class="wl-body">
+        <div class="wl-badge">${p.badge}</div>
+        <div class="wl-name">${p.name}</div>
+        <div class="wl-desc">${p.desc}</div>
+        <div class="wl-footer">
+          <div class="wl-price">${INR(p.price)}</div>
+          <button class="wl-add" onclick="addToCart(${p.id},'${p.name}',${p.price},'${p.emoji}')">+ Cart</button>
+        </div>
+      </div>
+    </div>`).join('') + `</div>`;
+}
+
+function removeFromWl(id) {
+  const wl = getWl().filter(x => x !== id);
+  saveWl(wl);
+  const el = document.getElementById('wlc-' + id);
+  if (el) { el.style.opacity = '0'; el.style.transform = 'scale(.9)'; setTimeout(() => renderWishlist(), 250); }
+}
+
+function addAllToCart() {
+  const wl = getWl();
+  const items = ALL_PRODUCTS.filter(p => wl.includes(p.id));
+  items.forEach(p => addToCart(p.id, p.name, p.price, p.emoji));
+  showToast(`${items.length} items added to cart`, '🛒');
+}
+
+function clearWishlist() {
+  if (!confirm('Clear all saved items?')) return;
+  saveWl([]);
+  renderWishlist();
+}
+
+renderWishlist();
+</script>
+{% endblock %}

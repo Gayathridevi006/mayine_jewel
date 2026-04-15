@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>{% block title %}mayin Jewellery{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream:      #fdf8f0;
+      --ivory:      #faf4e8;
+      --warm-white: #fff9f2;
+      --gold:       #c9a84c;
+      --gold-light: #e8c97a;
+      --gold-dark:  #9e7a2a;
+      --rose:       #e8d5c4;
+      --blush:      #f5ebe0;
+      --taupe:      #b8a090;
+      --charcoal:   #3a2e28;
+      --text:       #4a3c34;
+      --text-light: #7a6a60;
+      --border:     #e8d8c8;
+      --shadow:     rgba(180, 140, 80, 0.15);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Jost', sans-serif;
+      background-color: var(--cream);
+      color: var(--text);
+      font-weight: 300;
+      line-height: 1.7;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(253, 248, 240, 0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem;
+      display: flex; align-items: center; justify-content: space-between;
+      height: 68px;
+    }
+    .nav-brand {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.9rem;
+      font-weight: 600;
+      color: var(--gold-dark);
+      letter-spacing: 0.12em;
+      text-decoration: none;
+    }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a {
+      text-decoration: none;
+      color: var(--text-light);
+      font-size: 0.8rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--gold); }
+
+    .nav-cta {
+      background: var(--gold);
+      color: white !important;
+      padding: 0.45rem 1.1rem;
+      border-radius: 2px;
+    }
+    .nav-cta:hover { background: var(--gold-dark); color: white !important; }
+
+  .price-trigger { display: inline-flex; align-items: center; gap: 8px; background: white; border: 1px solid #e8d8c8; border-radius: 6px; padding: 0.5rem 1.1rem; font-size: 0.82rem; cursor: pointer; color: #4a3c34; margin-bottom: 1.4rem; transition: all 0.2s; font-family: 'Jost', sans-serif; }
+  .price-trigger:hover { border-color: #c9a84c; background: #fdf8f0; }
+  .price-dot { width: 8px; height: 8px; border-radius: 50%; background: #c9a84c; animation: blink 1.8s ease-in-out infinite; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--charcoal);
+      color: var(--rose);
+      text-align: center;
+      padding: 2.5rem 1rem;
+      font-size: 0.82rem;
+      letter-spacing: 0.06em;
+    }
+    footer a { color: var(--gold-light); text-decoration: none; }
+    footer .footer-brand {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.5rem;
+      color: var(--gold-light);
+      display: block;
+      margin-bottom: 0.6rem;
+    }
+    footer p { margin: 0.3rem 0; }
+
+    /* ── UTILITY ── */
+    .btn-gold {
+      display: inline-block;
+      background: var(--gold);
+      color: white;
+      padding: 0.75rem 2rem;
+      border: none; border-radius: 2px;
+      font-family: 'Jost', sans-serif;
+      font-size: 0.82rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      text-decoration: none;
+      cursor: pointer;
+      transition: background 0.25s, transform 0.2s;
+    }
+    .btn-gold:hover { background: var(--gold-dark); transform: translateY(-1px); }
+
+    .btn-outline {
+      display: inline-block;
+      border: 1.5px solid var(--gold);
+      color: var(--gold-dark);
+      padding: 0.72rem 1.9rem;
+      border-radius: 2px;
+      font-family: 'Jost', sans-serif;
+      font-size: 0.82rem;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.25s;
+    }
+    .btn-outline:hover {
+      background: var(--gold);
+      color: white;
+    }
+    /* ── MODAL ── */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+}
+
+.modal-overlay.active {
+  display: flex;
+}
+
+.modal-box {
+  background: var(--warm-white);
+  border-radius: 12px;
+  padding: 1.8rem;
+  width: 380px;
+  border: 1px solid var(--border);
+  box-shadow: 0 10px 30px var(--shadow);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.modal-header h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.5rem;
+}
+
+.close-btn {
+  cursor: pointer;
+  font-size: 1.5rem;
+  color: var(--taupe);
+}
+
+.price-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.price-card {
+  padding: 1rem;
+  border-radius: 8px;
+  text-align: center;
+  border: 1px solid var(--border);
+}
+
+.price-card.gold {
+  background: #fff6dc;
+}
+
+.price-card.silver {
+  background: #f4f4f4;
+}
+
+.price-card p {
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  color: var(--text-light);
+}
+
+.price-card h3 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.8rem;
+  color: var(--charcoal);
+}
+
+.price-card span {
+  font-size: 0.7rem;
+  color: var(--taupe);
+}
+
+.note {
+  text-align: center;
+  margin-top: 1rem;
+  font-size: 0.7rem;
+  color: var(--taupe);
+}
+
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+    }
+  </style>
+  {% block extra_head %}{% endblock %}
+</head>
+<!-- PRICE MODAL -->
+<div id="priceModal" class="modal-overlay">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h2>Live Metal Rates</h2>
+      <span onclick="closeModal()" class="close-btn">&times;</span>
+    </div>
+
+    <div class="price-grid">
+      <div class="price-card gold">
+        <p>Gold (22K)</p>
+        <h3 id="goldPrice">₹ --</h3>
+        <span>per gram</span>
+      </div>
+
+      <div class="price-card silver">
+        <p>Silver (999)</p>
+        <h3 id="silverPrice">₹ --</h3>
+        <span>per gram</span>
+      </div>
+    </div>
+
+    <p class="note" id="priceNote">Fetching latest prices...</p>
+  </div>
+</div>
+<body>
+
+<nav>
+  <a href="{% url 'home' %}" class="nav-brand">mayin</a>
+  <ul class="nav-links">
+    <li><a href="{% url 'home' %}">Home</a></li>
+    <li><a href="#collections">Collections</a></li>
+
+    <!-- Direct API link -->
+    <!-- <li><a href="{% url 'metal_prices' %}">Live Rates (API)</a></li> -->
+
+    <!-- Better UX (JS modal trigger) -->
+     <a href="#" onclick="fetchMetalPrices();return false;">Live Rates</a>
+
+
+    <li><a href="{% url 'custom_order' %}" class="nav-cta">Order Custom</a></li>
+  </ul>
+</nav>
+
+{% block content %}{% endblock %}
+
+<!-- JS -->
+
+<footer>
+  <span class="footer-brand">mayin</span>
+  <p>Handcrafted jewellery by a master goldsmith &bull; Karnataka, India</p>
+  <p>For custom gold designs, call <a href="tel:+919845024348">+91 9845024348</a></p>
+  <p style="margin-top:1rem; color: var(--taupe); font-size:0.75rem;">
+    &copy; 2025 mayin Jewellery. All rights reserved. &nbsp;|&nbsp; Serving Karnataka only
+  </p>
+</footer>
+<script>
+function openModal() {
+  document.getElementById("priceModal").classList.add("active");
+}
+
+function closeModal() {
+  document.getElementById("priceModal").classList.remove("active");
+}
+
+async function fetchMetalPrices() {
+  openModal();
+
+  const note = document.getElementById("priceNote");
+
+  try {
+    const res = await fetch("{% url 'metal_prices' %}");
+    const data = await res.json();
+
+    document.getElementById("goldPrice").innerText =
+      "₹ " + Math.round(data.gold.price_per_gram);
+
+    document.getElementById("silverPrice").innerText =
+      "₹ " + Math.round(data.silver.price_per_gram);
+
+    note.innerText = "Updated just now";
+  } catch (e) {
+    note.innerText = "Failed to fetch live prices";
+  }
+}
+</script>
+
+</body>
+</html>
+

@@ -1,0 +1,193 @@
+{% extends 'mayin/base.html' %}
+{% block title %}Track Order — Mayin Jewellery{% endblock %}
+{% block page_title %}Track Your Order{% endblock %}
+{% block page_sub %}Enter your order ID to see real-time status{% endblock %}
+
+{% block extra_head %}
+<style>
+.track-wrap { max-width: 680px; }
+.track-input-card { background: white; border: 1px solid var(--bsoft); border-radius: var(--r-lg); padding: 1.6rem; margin-bottom: 1.5rem; }
+.track-input-card h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; font-weight: 400; color: var(--text); margin-bottom: .8rem; }
+.track-row { display: flex; gap: .75rem; }
+.track-row .form-input { flex: 1; font-family: 'DM Sans', sans-serif; letter-spacing: .06em; }
+
+.result-card { background: white; border: 1px solid var(--bsoft); border-radius: var(--r-lg); overflow: hidden; display: none; }
+.result-card.show { display: block; }
+.result-head { background: var(--text); padding: 1.2rem 1.4rem; display: flex; align-items: center; justify-content: space-between; }
+.result-id   { font-size: .88rem; font-weight: 500; color: white; letter-spacing: .06em; }
+.result-date { font-size: .72rem; color: rgba(255,255,255,.5); margin-top: 2px; }
+
+.progress-section { padding: 1.6rem 1.4rem; }
+.progress-steps { display: flex; flex-direction: column; gap: 0; position: relative; }
+.progress-steps::before {
+  content: ''; position: absolute; left: 16px; top: 20px; bottom: 20px;
+  width: 2px; background: var(--bsoft); z-index: 0;
+}
+.progress-step { display: flex; gap: 1rem; align-items: flex-start; padding: .6rem 0; position: relative; z-index: 1; }
+.ps-dot {
+  width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1rem; border: 2px solid var(--bsoft); background: white;
+  transition: all .3s;
+}
+.ps-dot.done  { background: var(--gold); border-color: var(--gold); }
+.ps-dot.active { background: var(--text); border-color: var(--text); box-shadow: 0 0 0 4px rgba(58,46,40,.12); }
+.ps-dot.done svg, .ps-dot.active svg { stroke: white; }
+.ps-body { padding-top: 6px; }
+.ps-title { font-size: .88rem; font-weight: 500; color: var(--text); margin-bottom: 2px; }
+.ps-title.muted { color: var(--text-lt); font-weight: 400; }
+.ps-time  { font-size: .7rem; color: var(--text-lt); }
+
+.result-items { padding: 0 1.4rem 1.2rem; border-top: 1px solid var(--bsoft); }
+.result-items-title { font-size: .7rem; letter-spacing: .14em; text-transform: uppercase; color: var(--text-faint); margin: .8rem 0 .5rem; }
+.result-item { display: flex; align-items: center; gap: .8rem; padding: .5rem 0; border-bottom: 1px solid var(--bsoft); }
+.result-item:last-child { border-bottom: none; }
+.ri-emoji { width: 40px; height: 40px; background: var(--blush); border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; flex-shrink: 0; }
+.ri-name  { font-size: .83rem; font-weight: 500; color: var(--text); }
+.ri-qty   { font-size: .7rem; color: var(--text-lt); }
+.ri-price { margin-left: auto; font-family: 'Cormorant Garamond', serif; font-size: 1rem; color: var(--gold-dk); }
+
+.result-total { padding: .8rem 1.4rem; background: var(--blush); display: flex; justify-content: space-between; align-items: center; }
+.rt-label { font-size: .72rem; color: var(--text-lt); }
+.rt-val   { font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; color: var(--text); }
+
+.need-help { background: var(--blush); border: 1px solid var(--bsoft); border-radius: var(--r); padding: 1.1rem; margin-top: 1.2rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.need-help p { font-size: .82rem; color: var(--text-mid); }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="track-wrap">
+
+  <div class="track-input-card">
+    <h3>Enter your Order ID</h3>
+    <p style="font-size:.78rem;color:var(--text-lt);margin-bottom:.9rem">Find your Order ID in the confirmation message or email we sent you (format: MJO-XXXXXXXX).</p>
+    <div class="track-row">
+      <input type="text" class="form-input" id="trackInput" placeholder="e.g. MJO-A1B2C3D4" style="text-transform:uppercase;letter-spacing:.06em">
+      <button class="btn btn-gold" onclick="trackOrder()">Track</button>
+    </div>
+    <div id="trackMsg" style="margin-top:.75rem"></div>
+  </div>
+
+  <div class="result-card" id="resultCard">
+    <div class="result-head">
+      <div>
+        <div class="result-id" id="resId">—</div>
+        <div class="result-date" id="resDate">—</div>
+      </div>
+      <span id="resStatus" class="order-status"></span>
+    </div>
+    <div class="progress-section">
+      <div class="progress-steps" id="progressSteps"></div>
+    </div>
+    <div class="result-items">
+      <div class="result-items-title">Items</div>
+      <div id="resItems"></div>
+    </div>
+    <div class="result-total">
+      <div class="rt-label">Order Total</div>
+      <div class="rt-val" id="resTotal">—</div>
+    </div>
+    <div style="padding:.8rem 1.4rem">
+      <div class="need-help">
+        <p>Need help with this order? Our goldsmith is available 9am–7pm Mon–Sat.</p>
+        <a href="tel:+919845024348" class="btn btn-outline btn-sm">📞 Call Us</a>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const INR = n => '₹' + Number(n).toLocaleString('en-IN');
+
+// Check URL param on load
+(function(){
+  const p = new URLSearchParams(location.search).get('id');
+  if (p) { document.getElementById('trackInput').value = p; trackOrder(); }
+})();
+
+const STEPS = [
+  { key:'confirmed',   label:'Order Confirmed',  icon:'✓', time:'Order received and confirmed' },
+  { key:'processing',  label:'Being Crafted',     icon:'🔨', time:'Our goldsmith is crafting your piece' },
+  { key:'quality',     label:'Quality Check',     icon:'🔍', time:'Hallmark & quality inspection' },
+  { key:'shipped',     label:'Shipped',           icon:'📦', time:'Dispatched from our workshop' },
+  { key:'delivered',   label:'Delivered',         icon:'🏠', time:'Delivered to you' },
+];
+
+const STATUS_ORDER = ['confirmed','processing','quality','shipped','delivered'];
+
+async function trackOrder() {
+  const id  = document.getElementById('trackInput').value.trim().toUpperCase();
+  const msg = document.getElementById('trackMsg');
+  const rc  = document.getElementById('resultCard');
+  msg.innerHTML = '';
+  if (!id) { msg.innerHTML = '<div class="msg msg-err">Please enter an order ID.</div>'; return; }
+
+  msg.innerHTML = '<div class="msg msg-ok" style="background:var(--blush)">Looking up your order…</div>';
+  try {
+    const token = localStorage.getItem('mayinToken') || '';
+    const res = await fetch(`http://localhost:8001/api/orders/${id}`, {
+      headers: { 'Authorization': 'Bearer ' + token }
+    });
+    if (res.status === 404) throw { code: 404 };
+    if (!res.ok) throw { code: res.status };
+    const order = await res.json();
+    msg.innerHTML = '';
+    renderResult(order);
+  } catch (e) {
+    if (e.code === 404)
+      msg.innerHTML = `<div class="msg msg-err">Order "${id}" not found. Please check the ID and try again.</div>`;
+    else
+      msg.innerHTML = `<div class="msg msg-err">Could not look up order. Please call us at +91 9845024348.</div>`;
+    rc.classList.remove('show');
+  }
+}
+
+function renderResult(o) {
+  const rc = document.getElementById('resultCard');
+  document.getElementById('resId').textContent   = o.order_id;
+  document.getElementById('resDate').textContent = `Placed: ${new Date(o.created_at).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'})}`;
+  document.getElementById('resTotal').textContent = INR(o.total);
+
+  // Status badge
+  const sb = document.getElementById('resStatus');
+  const labels = { confirmed:'Order Confirmed', processing:'Being Crafted', quality:'Quality Check', shipped:'Shipped', delivered:'Delivered', cancelled:'Cancelled' };
+  sb.textContent = labels[o.status] || o.status;
+  sb.className = 'order-status ' + ({'confirmed':'status-confirmed','processing':'status-processing','shipped':'status-shipped','delivered':'status-delivered','cancelled':'status-cancelled'}[o.status]||'status-confirmed');
+
+  // Progress steps
+  const activeIdx = STATUS_ORDER.indexOf(o.status);
+  document.getElementById('progressSteps').innerHTML = STEPS.map((step, i) => {
+    const isDone   = i < activeIdx;
+    const isActive = i === activeIdx;
+    const cls = isDone ? 'done' : isActive ? 'active' : '';
+    return `
+      <div class="progress-step">
+        <div class="ps-dot ${cls}">
+          ${isDone || isActive
+            ? `<svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 8l4 4 6-6"/></svg>`
+            : `<span style="font-size:.85rem;opacity:.45">${i+1}</span>`}
+        </div>
+        <div class="ps-body">
+          <div class="ps-title ${!isDone && !isActive ? 'muted' : ''}">${step.label}</div>
+          <div class="ps-time">${isDone || isActive ? step.time : '—'}</div>
+        </div>
+      </div>`;
+  }).join('');
+
+  // Items
+  document.getElementById('resItems').innerHTML = (o.items||[]).map(i => `
+    <div class="result-item">
+      <div class="ri-emoji">${i.emoji||'💎'}</div>
+      <div><div class="ri-name">${i.name}</div><div class="ri-qty">Qty: ${i.qty}</div></div>
+      <div class="ri-price">${INR(i.price * i.qty)}</div>
+    </div>`).join('');
+
+  rc.classList.add('show');
+  rc.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+</script>
+{% endblock %}

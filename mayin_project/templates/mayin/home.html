@@ -1,0 +1,1276 @@
+{% extends 'mayin/base.html' %}
+{% block title %}Mayin Jewellery — Handcrafted Gold & Silver{% endblock %}
+{% load static %}
+
+{% block extra_head %}
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold:        #c9a84c;
+  --gold-light:  #e8c97a;
+  --gold-dark:   #9e7a2a;
+  --gold-pale:   #f7f0e0;
+  --cream:       #fdf8f0;
+  --ivory:       #fff9f2;
+  --blush:       #fdf3e7;
+  --border:      #e8d8c8;
+  --border-soft: #f0e8d8;
+  --text:        #3a2e28;
+  --text-mid:    #7a6a60;
+  --text-light:  #a09080;
+  --text-faint:  #c8b8a8;
+  --sidebar-w:   272px;
+  --radius:      10px;
+  --radius-lg:   14px;
+  --shadow-sm:   0 2px 8px rgba(160,120,60,0.08);
+  --shadow-md:   0 8px 28px rgba(160,120,60,0.13);
+  --shadow-lg:   0 20px 50px rgba(160,120,60,0.18);
+  --transition:  all 0.22s cubic-bezier(0.4,0,0.2,1);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--cream);
+  color: var(--text);
+  line-height: 1.6;
+  font-weight: 300;
+}
+
+body > nav { display: none; }
+
+/* ═══════════════════════════════════════════════
+   LAYOUT
+═══════════════════════════════════════════════ */
+.shell {
+  display: grid;
+  grid-template-columns: var(--sidebar-w) 1fr;
+  min-height: 100vh;
+}
+
+/* ═══════════════════════════════════════════════
+   SIDEBAR
+═══════════════════════════════════════════════ */
+.sidebar {
+  background: var(--ivory);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+/* Logo block */
+.logo-block {
+  padding: 1.2rem 1rem 0.8rem;
+  border-bottom: 1px solid var(--border-soft);
+  text-align: center;
+  background: linear-gradient(180deg, #fffcf5 0%, var(--ivory) 100%);
+}
+.sidebar-logo {
+  width: 148px;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+  filter: drop-shadow(0 2px 6px rgba(180,140,60,0.15));
+}
+
+/* Nav sections */
+.nav-body { padding: 0.6rem 0; flex: 1; }
+
+.nav-label {
+  font-size: 0.62rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  padding: 0.8rem 1.2rem 0.25rem;
+  font-weight: 500;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 0.52rem 1.2rem;
+  font-size: 0.84rem;
+  color: var(--text-mid);
+  cursor: pointer;
+  border-left: 2px solid transparent;
+  transition: var(--transition);
+  text-decoration: none;
+  font-weight: 400;
+  position: relative;
+}
+.nav-item svg { width: 14px; height: 14px; flex-shrink: 0; opacity: 0.6; transition: opacity 0.2s; }
+.nav-item:hover { background: var(--blush); color: var(--text); }
+.nav-item:hover svg { opacity: 0.85; }
+.nav-item.active {
+  color: var(--gold-dark);
+  border-left-color: var(--gold);
+  background: linear-gradient(90deg, rgba(201,168,76,0.08) 0%, transparent 100%);
+  font-weight: 500;
+}
+.nav-item.active svg { opacity: 1; }
+
+.nav-badge {
+  margin-left: auto;
+  background: var(--gold);
+  color: white;
+  font-size: 0.6rem;
+  padding: 1px 6px;
+  border-radius: 100px;
+  font-weight: 500;
+  display: none;
+}
+.nav-badge.show { display: inline-block; }
+
+/* Contact block */
+.contact-block {
+  padding: 1rem 1.2rem;
+  border-top: 1px solid var(--border-soft);
+  background: var(--blush);
+}
+.contact-tag {
+  font-size: 0.62rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+.contact-phone {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--gold-dark);
+  text-decoration: none;
+  margin-bottom: 3px;
+  transition: color 0.2s;
+}
+.contact-phone:hover { color: var(--gold); }
+.contact-phone svg { width: 13px; height: 13px; }
+.contact-email {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  color: var(--text-light);
+  text-decoration: none;
+  margin-bottom: 4px;
+  transition: color 0.2s;
+}
+.contact-email:hover { color: var(--gold-dark); }
+.contact-note {
+  font-size: 0.68rem;
+  color: var(--text-faint);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.online-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: #3b6d11;
+  animation: pulse-green 2s infinite;
+}
+@keyframes pulse-green {
+  0%,100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.85); }
+}
+
+/* ═══════════════════════════════════════════════
+   MAIN CONTENT
+═══════════════════════════════════════════════ */
+.main {
+  display: flex;
+  flex-direction: column;
+  background: var(--cream);
+  min-width: 0;
+}
+
+/* ── Top header bar ── */
+.main-topbar {
+  background: var(--ivory);
+  border-bottom: 1px solid var(--border-soft);
+  padding: 0.9rem 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  backdrop-filter: blur(8px);
+}
+.topbar-left h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.4rem;
+  font-weight: 400;
+  color: var(--text);
+  letter-spacing: 0.02em;
+}
+.topbar-left p {
+  font-size: 0.72rem;
+  color: var(--text-light);
+  margin-top: 1px;
+  letter-spacing: 0.04em;
+}
+.topbar-right { display: flex; align-items: center; gap: 0.75rem; }
+
+.topbar-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0.45rem 1rem;
+  border-radius: 6px;
+  font-size: 0.78rem;
+  font-family: 'DM Sans', sans-serif;
+  cursor: pointer;
+  transition: var(--transition);
+  text-decoration: none;
+  font-weight: 400;
+}
+.topbar-btn-ghost {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-mid);
+}
+.topbar-btn-ghost:hover { border-color: var(--gold); color: var(--gold-dark); background: var(--gold-pale); }
+.topbar-btn-gold {
+  background: var(--gold);
+  border: 1px solid transparent;
+  color: white;
+}
+.topbar-btn-gold:hover { background: var(--gold-dark); }
+.cart-pill {
+  position: relative;
+}
+.cart-pill-count {
+  position: absolute;
+  top: -5px; right: -5px;
+  background: var(--gold-dark);
+  color: white;
+  font-size: 0.58rem;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+}
+.cart-pill-count.show { display: flex; }
+
+/* ── Price ticker bar ── */
+.price-bar {
+  background: var(--text);
+  padding: 0.45rem 2rem;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  cursor: pointer;
+  transition: background 0.2s;
+  overflow: hidden;
+}
+.price-bar:hover { background: #2a201a; }
+.price-bar-label {
+  font-size: 0.65rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold-light);
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+.ticker-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--gold);
+  animation: blink 1.6s ease-in-out infinite;
+}
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.25} }
+
+.price-bar-ticker {
+  display: flex;
+  gap: 2rem;
+  overflow: hidden;
+  flex: 1;
+}
+.ticker-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+  font-size: 0.72rem;
+}
+.ticker-metal { color: var(--gold-light); letter-spacing: 0.08em; }
+.ticker-val { color: white; font-weight: 500; font-size: 0.8rem; }
+.ticker-chg {
+  font-size: 0.65rem;
+  padding: 1px 5px;
+  border-radius: 3px;
+}
+.chg-up   { background: rgba(74,200,100,0.18); color: #7fd89a; }
+.chg-down { background: rgba(220,80,80,0.18);  color: #e89090; }
+.price-bar-cta {
+  font-size: 0.65rem;
+  color: var(--gold);
+  letter-spacing: 0.1em;
+  white-space: nowrap;
+  flex-shrink: 0;
+  text-transform: uppercase;
+}
+
+/* ── Content area ── */
+.content-area { padding: 1.6rem 2rem 3rem; flex: 1; }
+
+/* ── Filter chips ── */
+.filter-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+.filter-label {
+  font-size: 0.68rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  margin-right: 4px;
+}
+.chip {
+  padding: 0.35rem 1rem;
+  border-radius: 100px;
+  font-size: 0.78rem;
+  border: 1px solid var(--border);
+  background: white;
+  color: var(--text-mid);
+  cursor: pointer;
+  transition: var(--transition);
+  font-family: 'DM Sans', sans-serif;
+  white-space: nowrap;
+}
+.chip:hover { border-color: var(--gold); color: var(--gold-dark); background: var(--gold-pale); }
+.chip.active {
+  background: var(--text);
+  border-color: var(--text);
+  color: white;
+  font-weight: 500;
+}
+
+/* ── Products grid ── */
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+@media (max-width: 1300px) { .products-grid { grid-template-columns: repeat(3, 1fr); } }
+@media (max-width: 980px)  { .products-grid { grid-template-columns: repeat(2, 1fr); } }
+
+/* ── Product card ── */
+.p-card {
+  background: white;
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: var(--transition);
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+  position: relative;
+}
+.p-card:hover {
+  border-color: rgba(201,168,76,0.5);
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Card image */
+.p-img {
+  height: 168px;
+  background: var(--blush);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+  flex-shrink: 0;
+}
+.p-img img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s cubic-bezier(0.4,0,0.2,1);
+}
+.p-card:hover .p-img img { transform: scale(1.06); }
+.p-emoji-fallback { font-size: 2.6rem; line-height: 1; }
+
+/* Stock ribbon */
+.p-stock-out {
+  position: absolute;
+  top: 10px; left: 10px;
+  background: rgba(58,46,40,0.75);
+  backdrop-filter: blur(4px);
+  color: white;
+  font-size: 0.6rem;
+  padding: 2px 8px;
+  border-radius: 100px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* Quick add button — appears on hover */
+.p-quick-add {
+  position: absolute;
+  bottom: 8px; left: 50%;
+  transform: translateX(-50%) translateY(8px);
+  opacity: 0;
+  background: var(--text);
+  color: white;
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 0.38rem 0.9rem;
+  border-radius: 6px;
+  white-space: nowrap;
+  transition: var(--transition);
+  pointer-events: none;
+  font-family: 'DM Sans', sans-serif;
+  border: none;
+  cursor: pointer;
+}
+.p-card:hover .p-quick-add {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+  pointer-events: all;
+}
+.p-quick-add:hover { background: var(--gold-dark) !important; }
+
+/* Card body */
+.p-body {
+  padding: 0.9rem 1rem 1rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.p-badge {
+  display: inline-block;
+  font-size: 0.6rem;
+  padding: 2px 8px;
+  border-radius: 100px;
+  background: var(--gold-pale);
+  color: var(--gold-dark);
+  margin-bottom: 0.4rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  border: 1px solid rgba(201,168,76,0.2);
+}
+.p-name {
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--text);
+  margin-bottom: 3px;
+  line-height: 1.3;
+}
+.p-desc {
+  font-size: 0.72rem;
+  color: var(--text-light);
+  margin-bottom: auto;
+  padding-bottom: 0.7rem;
+}
+.p-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 0.7rem;
+  border-top: 1px solid var(--border-soft);
+  margin-top: 0.5rem;
+}
+.p-price {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.2rem;
+  font-weight: 400;
+  color: var(--gold-dark);
+  letter-spacing: 0.01em;
+}
+.p-wishlist {
+  background: none;
+  border: 1px solid var(--border);
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--transition);
+  color: var(--text-light);
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+.p-wishlist:hover { border-color: #e85a7a; color: #e85a7a; background: rgba(232,90,122,0.05); }
+.p-wishlist.active { border-color: #e85a7a; color: #e85a7a; background: rgba(232,90,122,0.08); }
+
+/* ═══════════════════════════════════════════════
+   MODAL — Metal prices
+═══════════════════════════════════════════════ */
+.modal-overlay {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(20,14,10,0.5);
+  backdrop-filter: blur(4px);
+  z-index: 300;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+.modal-overlay.open { display: flex; }
+
+.modal-box {
+  background: white;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  padding: 0;
+  width: 480px;
+  max-width: 100%;
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  animation: modal-in 0.25s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes modal-in {
+  from { opacity: 0; transform: scale(0.94) translateY(10px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+.modal-head {
+  background: var(--text);
+  padding: 1.2rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.modal-head-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.3rem;
+  color: var(--gold-light);
+  font-weight: 400;
+  letter-spacing: 0.04em;
+}
+.modal-head-sub { font-size: 0.68rem; color: var(--text-faint); margin-top: 1px; }
+.modal-close-btn {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.12);
+  width: 30px; height: 30px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  color: rgba(255,255,255,0.6);
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.2s;
+}
+.modal-close-btn:hover { background: rgba(255,255,255,0.15); color: white; }
+
+.modal-body { padding: 1.4rem 1.5rem 1.5rem; }
+.metal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 1rem; }
+
+.metal-tile {
+  background: var(--cream);
+  border: 1px solid var(--border-soft);
+  border-radius: 10px;
+  padding: 1.1rem;
+  position: relative;
+  overflow: hidden;
+}
+.metal-tile::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+}
+.metal-tile.gold::before  { background: linear-gradient(90deg, #f5d27a, #c9a84c); }
+.metal-tile.silver::before { background: linear-gradient(90deg, #d0d0d0, #a0a0a0); }
+
+.metal-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 0.7rem;
+}
+.metal-icon {
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+.metal-icon.gold   { background: linear-gradient(135deg,#f5d27a,#c9a84c); color: #6a4810; }
+.metal-icon.silver { background: linear-gradient(135deg,#e0e0e0,#a0a0a0); color: #484848; }
+.metal-name { font-size: 0.7rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-light); }
+
+.metal-rate {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.9rem;
+  color: var(--text);
+  line-height: 1;
+  margin-bottom: 2px;
+}
+.metal-per { font-size: 0.68rem; color: var(--text-light); margin-bottom: 6px; }
+.metal-10g { font-size: 0.8rem; color: var(--text-mid); }
+.metal-10g strong { color: var(--text); }
+.metal-chg {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 0.68rem;
+  margin-top: 7px;
+  padding: 2px 7px;
+  border-radius: 100px;
+}
+.chg-up-pill   { background: rgba(74,180,100,0.1); color: #2d7a3e; border: 1px solid rgba(74,180,100,0.2); }
+.chg-down-pill { background: rgba(200,60,60,0.1);  color: #9a2828; border: 1px solid rgba(200,60,60,0.2); }
+
+.modal-note-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 0.68rem;
+  color: var(--text-light);
+  border-top: 1px solid var(--border-soft);
+  padding-top: 0.8rem;
+}
+
+/* ═══════════════════════════════════════════════
+   TOAST
+═══════════════════════════════════════════════ */
+.toast-wrap {
+  position: fixed;
+  bottom: 1.5rem; right: 1.5rem;
+  z-index: 400;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  pointer-events: none;
+}
+.toast {
+  background: var(--text);
+  color: white;
+  padding: 0.7rem 1.2rem;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: var(--shadow-md);
+  transform: translateX(120%);
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1);
+  pointer-events: all;
+}
+.toast.show { transform: translateX(0); opacity: 1; }
+.toast-icon { font-size: 1rem; }
+
+/* ═══════════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .shell { grid-template-columns: 1fr; }
+  .sidebar { position: static; height: auto; }
+  .main-topbar { padding: 0.75rem 1rem; }
+  .content-area { padding: 1rem 1rem 2rem; }
+  .price-bar { padding: 0.4rem 1rem; }
+}
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- ══════════════════════════════════════════
+     SHELL
+══════════════════════════════════════════ -->
+<div class="shell">
+
+  <!-- ════════════ SIDEBAR ════════════ -->
+  <aside class="sidebar">
+
+    <!-- LOGO — correct M (two vertical strokes joined at top-center peak) -->
+    <div class="logo-block">
+      <svg class="sidebar-logo" viewBox="0 0 320 380" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="gM" x1="20%" y1="0%" x2="80%" y2="100%">
+            <stop offset="0%"   stop-color="#f7e090"/>
+            <stop offset="35%"  stop-color="#d4a843"/>
+            <stop offset="70%"  stop-color="#c9a84c"/>
+            <stop offset="100%" stop-color="#8a6010"/>
+          </linearGradient>
+          <linearGradient id="gM2" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%"   stop-color="#f5d870"/>
+            <stop offset="45%"  stop-color="#d0a030"/>
+            <stop offset="100%" stop-color="#9a7020"/>
+          </linearGradient>
+          <linearGradient id="gFlute" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%"   stop-color="#f0cc50"/>
+            <stop offset="50%"  stop-color="#b88828"/>
+            <stop offset="100%" stop-color="#886018"/>
+          </linearGradient>
+          <linearGradient id="gFluteEnd" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%"   stop-color="#d8b840"/>
+            <stop offset="100%" stop-color="#685010"/>
+          </linearGradient>
+          <filter id="fGlow" x="-10%" y="-10%" width="120%" height="120%">
+            <feGaussianBlur stdDeviation="1.5" result="b"/>
+            <feComposite in="SourceGraphic" in2="b" operator="over"/>
+          </filter>
+        </defs>
+
+        <!--
+          CORRECT M:
+          • Two outer verticals go DOWN from top
+          • They meet at a PEAK in the middle (top-center)
+          • Inner legs go DOWN from that peak
+          Think: two tall rectangles leaning inward at the top, meeting at one point
+        -->
+
+        <!-- LEFT outer leg: top-left → bottom-left, serif foot -->
+        <!-- RIGHT outer leg: top-right → bottom-right, serif foot -->
+        <!-- CENTER peak: the two inner diagonals meet at top-center -->
+
+        <!-- Full M as a single filled path -->
+        <!-- Reading as: start bottom-left, up left leg, diagonal down-right to valley
+             is WRONG for M — M has no valley. It goes: BL → TL → peak-center → TR → BR -->
+        <!--
+          Correct M stroke order (outline):
+          outer-left (x=55) goes from y=240 up to y=60
+          diagonal goes from (55,60) down-right to center peak (160,130)
+          diagonal continues from (160,130) back up-right to (265,60)
+          outer-right goes from (265,60) down to (265,240)
+          inner-right: (265,240) up to (240,240) then up to (240,80) is the inner right face
+          tricky — do a thick stroke path instead
+
+          Actually: draw as a thick path with stroke, not fill, for the letter form.
+          Stroke path: BL(55,240) → TL(55,60) → peak(160,115) → TR(265,60) → BR(265,240)
+          That IS the correct M — the peak is ABOVE the midpoints giving it the M shape.
+        -->
+
+        <!-- M letter — thick stroked path, correct shape -->
+        <path
+          d="M 55,242 L 55,62 L 160,120 L 265,62 L 265,242"
+          fill="none"
+          stroke="url(#gM)"
+          stroke-width="36"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          filter="url(#fGlow)"
+        />
+        <!-- Inner highlight for 3D feel -->
+        <path
+          d="M 55,242 L 55,62 L 160,120 L 265,62 L 265,242"
+          fill="none"
+          stroke="rgba(255,248,200,0.35)"
+          stroke-width="10"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+        <!-- Left serif base -->
+        <rect x="38" y="238" width="34" height="7" rx="3.5" fill="url(#gM)"/>
+        <!-- Right serif base -->
+        <rect x="248" y="238" width="34" height="7" rx="3.5" fill="url(#gM)"/>
+        <!-- Top-left serif -->
+        <rect x="38" y="56" width="26" height="5" rx="2.5" fill="url(#gM)"/>
+        <!-- Top-right serif -->
+        <rect x="256" y="56" width="26" height="5" rx="2.5" fill="url(#gM)"/>
+
+        <!-- ══ FILIGREE scrolls — left ══ -->
+        <g fill="none" stroke="url(#gM)" stroke-width="1.5" stroke-linecap="round" opacity="0.9">
+          <path d="M 42 95 C 22 85 8 68 14 52 C 20 36 38 40 36 58 C 34 72 20 75 10 68"/>
+          <path d="M 36 72 C 16 80 4 94 9 108 C 14 122 30 118 28 104"/>
+          <path d="M 28 104 C 12 110 0 124 5 136 C 10 148 26 142 26 128"/>
+          <path d="M 42 150 C 22 145 10 156 14 169 C 18 180 32 176 30 162"/>
+        </g>
+        <circle cx="14" cy="52"  r="2"   fill="#c9a84c" opacity="0.9"/>
+        <circle cx=" 9" cy="108" r="1.6" fill="#c9a84c" opacity="0.85"/>
+        <circle cx=" 5" cy="136" r="1.4" fill="#c9a84c" opacity="0.8"/>
+        <circle cx="14" cy="169" r="1.4" fill="#c9a84c" opacity="0.8"/>
+
+        <!-- ══ FILIGREE scrolls — right ══ -->
+        <g fill="none" stroke="url(#gM)" stroke-width="1.5" stroke-linecap="round" opacity="0.9">
+          <path d="M 278 95 C 298 85 312 68 306 52 C 300 36 282 40 284 58 C 286 72 300 75 310 68"/>
+          <path d="M 284 72 C 304 80 316 94 311 108 C 306 122 290 118 292 104"/>
+          <path d="M 292 104 C 308 110 320 124 315 136 C 310 148 294 142 294 128"/>
+          <path d="M 278 150 C 298 145 310 156 306 169 C 302 180 288 176 290 162"/>
+        </g>
+        <circle cx="306" cy="52"  r="2"   fill="#c9a84c" opacity="0.9"/>
+        <circle cx="311" cy="108" r="1.6" fill="#c9a84c" opacity="0.85"/>
+        <circle cx="315" cy="136" r="1.4" fill="#c9a84c" opacity="0.8"/>
+        <circle cx="306" cy="169" r="1.4" fill="#c9a84c" opacity="0.8"/>
+
+        <!-- ══ FLUTE (horizontal through M middle ~y=168) ══ -->
+        <rect x="8"   y="162" width="304" height="11" rx="5.5" fill="url(#gFlute)"/>
+        <rect x="10"  y="163" width="300" height="3.5" rx="2"  fill="rgba(255,245,180,0.5)"/>
+        <rect x="10"  y="169" width="300" height="3"   rx="2"  fill="rgba(60,30,0,0.22)"/>
+        <!-- Knuckle rings -->
+        <rect x="30"  y="160" width="4" height="15" rx="2" fill="url(#gFluteEnd)"/>
+        <rect x="82"  y="160" width="4" height="15" rx="2" fill="url(#gFluteEnd)"/>
+        <rect x="148" y="160" width="4" height="15" rx="2" fill="url(#gFluteEnd)"/>
+        <rect x="214" y="160" width="4" height="15" rx="2" fill="url(#gFluteEnd)"/>
+        <rect x="280" y="160" width="4" height="15" rx="2" fill="url(#gFluteEnd)"/>
+        <!-- Finger holes -->
+        <ellipse cx="58"  cy="167.5" rx="3.8" ry="3.2" fill="#6a4808" opacity="0.72"/>
+        <ellipse cx="116" cy="167.5" rx="3.8" ry="3.2" fill="#6a4808" opacity="0.72"/>
+        <ellipse cx="182" cy="167.5" rx="3.8" ry="3.2" fill="#6a4808" opacity="0.72"/>
+        <ellipse cx="247" cy="167.5" rx="3.8" ry="3.2" fill="#6a4808" opacity="0.72"/>
+        <!-- Mouthpiece -->
+        <ellipse cx="9"   cy="167.5" rx="7"   ry="5.5" fill="url(#gFlute)"/>
+        <ellipse cx="9"   cy="165.5" rx="4.5" ry="2.5" fill="rgba(255,245,180,0.55)"/>
+        <!-- End cap -->
+        <ellipse cx="311" cy="167.5" rx="7"   ry="5.5" fill="url(#gFluteEnd)"/>
+
+        <!-- ══ FLOWERS on flute ══ -->
+        <!-- Left flower cluster (near x=44) -->
+        <g transform="translate(44,162)">
+          <ellipse cx="0" cy="-8.5" rx="4.2" ry="6.5" fill="#f0b4b4" opacity="0.92" transform="rotate(0)"/>
+          <ellipse cx="0" cy="-8.5" rx="4.2" ry="6.5" fill="#e8a4a4" opacity="0.87" transform="rotate(40)"/>
+          <ellipse cx="0" cy="-8.5" rx="4.2" ry="6.5" fill="#f0b4b4" opacity="0.92" transform="rotate(80)"/>
+          <ellipse cx="0" cy="-8.5" rx="4.2" ry="6.5" fill="#e8a4a4" opacity="0.87" transform="rotate(120)"/>
+          <ellipse cx="0" cy="-8.5" rx="4.2" ry="6.5" fill="#f0b4b4" opacity="0.92" transform="rotate(160)"/>
+          <ellipse cx="0" cy="-8.5" rx="4.2" ry="6.5" fill="#e8a4a4" opacity="0.87" transform="rotate(200)"/>
+          <ellipse cx="0" cy="-8.5" rx="4.2" ry="6.5" fill="#f0b4b4" opacity="0.92" transform="rotate(240)"/>
+          <ellipse cx="0" cy="-8.5" rx="4.2" ry="6.5" fill="#e8a4a4" opacity="0.87" transform="rotate(280)"/>
+          <ellipse cx="0" cy="-8.5" rx="4.2" ry="6.5" fill="#f0b4b4" opacity="0.90" transform="rotate(320)"/>
+          <circle cx="0" cy="0" r="4.5" fill="#f5d060"/>
+          <circle cx="0" cy="0" r="2.2" fill="#c9a84c"/>
+        </g>
+        <!-- Tiny blossom left -->
+        <g transform="translate(22,159)">
+          <ellipse cx="0" cy="-5.5" rx="2.8" ry="4.2" fill="#f8c8c8" opacity="0.85" transform="rotate(0)"/>
+          <ellipse cx="0" cy="-5.5" rx="2.8" ry="4.2" fill="#f0b0b0" opacity="0.82" transform="rotate(72)"/>
+          <ellipse cx="0" cy="-5.5" rx="2.8" ry="4.2" fill="#f8c8c8" opacity="0.85" transform="rotate(144)"/>
+          <ellipse cx="0" cy="-5.5" rx="2.8" ry="4.2" fill="#f0b0b0" opacity="0.82" transform="rotate(216)"/>
+          <ellipse cx="0" cy="-5.5" rx="2.8" ry="4.2" fill="#f8c8c8" opacity="0.85" transform="rotate(288)"/>
+          <circle cx="0" cy="0" r="3" fill="#f5d060"/>
+          <circle cx="0" cy="0" r="1.4" fill="#c9a84c"/>
+        </g>
+
+        <!-- Right flower cluster (near x=276) -->
+        <g transform="translate(276,162)">
+          <ellipse cx="0" cy="-8.5" rx="4.2" ry="6.5" fill="#f0b4b4" opacity="0.92" transform="rotate(0)"/>
+          <ellipse cx="0" cy="-8.5" rx="4.2" ry="6.5" fill="#e8a4a4" opacity="0.87" transform="rotate(40)"/>
+          <ellipse cx="0" cy="-8.5" rx="4.2" ry="6.5" fill="#f0b4b4" opacity="0.92" transform="rotate(80)"/>
+          <ellipse cx="0" cy="-8.5" rx="4.2" ry="6.5" fill="#e8a4a4" opacity="0.87" transform="rotate(120)"/>
+          <ellipse cx="0" cy="-8.5" rx="4.2" ry="6.5" fill="#f0b4b4" opacity="0.92" transform="rotate(160)"/>
+          <ellipse cx="0" cy="-8.5" rx="4.2" ry="6.5" fill="#e8a4a4" opacity="0.87" transform="rotate(200)"/>
+          <ellipse cx="0" cy="-8.5" rx="4.2" ry="6.5" fill="#f0b4b4" opacity="0.92" transform="rotate(240)"/>
+          <ellipse cx="0" cy="-8.5" rx="4.2" ry="6.5" fill="#e8a4a4" opacity="0.87" transform="rotate(280)"/>
+          <ellipse cx="0" cy="-8.5" rx="4.2" ry="6.5" fill="#f0b4b4" opacity="0.90" transform="rotate(320)"/>
+          <circle cx="0" cy="0" r="4.5" fill="#f5d060"/>
+          <circle cx="0" cy="0" r="2.2" fill="#c9a84c"/>
+        </g>
+        <!-- Tiny blossom right -->
+        <g transform="translate(298,159)">
+          <ellipse cx="0" cy="-5.5" rx="2.8" ry="4.2" fill="#f8c8c8" opacity="0.85" transform="rotate(0)"/>
+          <ellipse cx="0" cy="-5.5" rx="2.8" ry="4.2" fill="#f0b0b0" opacity="0.82" transform="rotate(72)"/>
+          <ellipse cx="0" cy="-5.5" rx="2.8" ry="4.2" fill="#f8c8c8" opacity="0.85" transform="rotate(144)"/>
+          <ellipse cx="0" cy="-5.5" rx="2.8" ry="4.2" fill="#f0b0b0" opacity="0.82" transform="rotate(216)"/>
+          <ellipse cx="0" cy="-5.5" rx="2.8" ry="4.2" fill="#f8c8c8" opacity="0.85" transform="rotate(288)"/>
+          <circle cx="0" cy="0" r="3" fill="#f5d060"/>
+          <circle cx="0" cy="0" r="1.4" fill="#c9a84c"/>
+        </g>
+
+        <!-- Sparkle dots -->
+        <circle cx="54"  cy="148" r="1.4" fill="#f5d060" opacity="0.9"/>
+        <circle cx="36"  cy="154" r="0.9" fill="#e0b840" opacity="0.8"/>
+        <circle cx="268" cy="148" r="1.4" fill="#f5d060" opacity="0.9"/>
+        <circle cx="286" cy="154" r="0.9" fill="#e0b840" opacity="0.8"/>
+        <!-- Leaf sprigs -->
+        <ellipse cx="33"  cy="156" rx="3.2" ry="1.6" fill="#8ab860" opacity="0.65" transform="rotate(-28,33,156)"/>
+        <ellipse cx="55"  cy="155" rx="3.2" ry="1.6" fill="#70a048" opacity="0.6"  transform="rotate(22,55,155)"/>
+        <ellipse cx="265" cy="156" rx="3.2" ry="1.6" fill="#8ab860" opacity="0.65" transform="rotate(28,265,156)"/>
+        <ellipse cx="288" cy="155" rx="3.2" ry="1.6" fill="#70a048" opacity="0.6"  transform="rotate(-22,288,155)"/>
+
+        <!-- ══ WORDMARK ══ -->
+        <text
+          x="160" y="305"
+          font-family="Georgia,'Times New Roman',serif"
+          font-size="48"
+          font-style="italic"
+          font-weight="400"
+          fill="url(#gM2)"
+          text-anchor="middle"
+          letter-spacing="2">Mayin</text>
+        <text
+          x="160" y="330"
+          font-family="Georgia,'Times New Roman',serif"
+          font-size="11.5"
+          font-weight="400"
+          fill="#c9a84c"
+          text-anchor="middle"
+          letter-spacing="7">JEWELLERY</text>
+        <!-- Decorative rule under wordmark -->
+        <g opacity="0.5">
+          <line x1="90"  y1="337" x2="130" y2="337" stroke="#c9a84c" stroke-width="0.7"/>
+          <circle cx="140" cy="337" r="1.5" fill="#c9a84c"/>
+          <circle cx="160" cy="337" r="2.5" fill="#c9a84c"/>
+          <circle cx="180" cy="337" r="1.5" fill="#c9a84c"/>
+          <line x1="190" y1="337" x2="230" y2="337" stroke="#c9a84c" stroke-width="0.7"/>
+        </g>
+      </svg>
+    </div><!-- /logo-block -->
+
+    <!-- NAV -->
+    <nav class="nav-body">
+      <div class="nav-label">Catalogue</div>
+      <a class="nav-item active" href="#" onclick="filterCat('all',this);return false;">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="1" width="6" height="6" rx="1.2"/><rect x="9" y="1" width="6" height="6" rx="1.2"/><rect x="1" y="9" width="6" height="6" rx="1.2"/><rect x="9" y="9" width="6" height="6" rx="1.2"/></svg>
+        All Products
+      </a>
+      <a class="nav-item" href="#" onclick="filterCat('gold',this);return false;">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="5.5"/><path d="M5.5 8h5M8 5.5v5"/></svg>
+        Gold Jewellery
+      </a>
+      <a class="nav-item" href="#" onclick="filterCat('silver',this);return false;">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="5.5"/><path d="M6 6h4l-1.5 4H7.5L6 6z"/></svg>
+        Silver Jewellery
+      </a>
+      <a class="nav-item" href="#" onclick="filterCat('bridal',this);return false;">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2l1.4 2.9 3.2.5-2.3 2.2.5 3.2L8 9.2l-2.8 1.6.5-3.2L3.4 5.4l3.2-.5z"/></svg>
+        Bridal Sets
+      </a>
+      <a class="nav-item" href="#" onclick="filterCat('custom',this);return false;">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M11 2l3 3-8 8H3v-3l8-8z"/></svg>
+        Custom Designs
+      </a>
+
+      <div class="nav-label" style="margin-top:0.4rem">Account</div>
+      <a class="nav-item" href="{% url 'signin' %}">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="5" r="3"/><path d="M2 14c0-3 2.7-5 6-5s6 2 6 5"/></svg>
+        Sign In
+      </a>
+      <a class="nav-item" href="{% url 'cart' %}" id="cartNavItem">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1.5 1.5h2l2 8h7l1.5-5H5"/><circle cx="6.5" cy="13" r="1"/><circle cx="11.5" cy="13" r="1"/></svg>
+        Cart
+        <span class="nav-badge" id="cartNavBadge">0</span>
+      </a>
+
+      <div class="nav-label" style="margin-top:0.4rem">Quick Links</div>
+      <a class="nav-item" href="#" onclick="openPriceModal();return false;">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2v2M8 12v2M2 8h2M12 8h2"/><circle cx="8" cy="8" r="3.5"/></svg>
+        Live Metal Rates
+      </a>
+      <a class="nav-item" href="{% url 'custom_order' %}">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M11 2l3 3-8 8H3v-3l8-8z"/><path d="M9 4l3 3"/></svg>
+        Order Custom
+      </a>
+    </nav>
+
+    <!-- CONTACT -->
+    <div class="contact-block">
+      <div class="contact-tag">Custom Gold Designs</div>
+      <a href="tel:+919845024348" class="contact-phone">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 2h3l1.5 3.5-2 1.2A9 9 0 008.3 10l1.2-2L13 9.5V13a1 1 0 01-1 1C5.4 14 2 7.6 2 3a1 1 0 011-1z"/></svg>
+        +91 9845024348
+      </a>
+      <a href="mailto:balajiachari18@gmail.com" class="contact-email">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" width="12" height="12"><rect x="1.5" y="3.5" width="13" height="9" rx="1.5"/><path d="M1.5 4l6.5 5 6.5-5"/></svg>
+        balajiachari18@gmail.com
+      </a>
+      <div class="contact-note">
+        <span class="online-dot"></span>
+        Karnataka only · Call or WhatsApp
+      </div>
+    </div>
+
+  </aside><!-- /sidebar -->
+
+
+  <!-- ════════════ MAIN ════════════ -->
+  <div class="main">
+
+    <!-- Top header bar -->
+    <div class="main-topbar">
+      <div class="topbar-left">
+        <h1>Our Jewellery Collection</h1>
+        <p>Handcrafted by a master goldsmith &bull; Karnataka &bull; Prices in INR</p>
+      </div>
+      <div class="topbar-right">
+        <a href="{% url 'signin' %}" class="topbar-btn topbar-btn-ghost">
+          <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="5" r="3"/><path d="M2 14c0-3 2.7-5 6-5s6 2 6 5"/></svg>
+          Sign In
+        </a>
+        <a href="{% url 'cart' %}" class="topbar-btn topbar-btn-gold cart-pill">
+          <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1.5 1.5h2l2 8h7l1.5-5H5"/><circle cx="6.5" cy="13" r="1"/><circle cx="11.5" cy="13" r="1"/></svg>
+          Cart
+          <span class="cart-pill-count" id="cartPillCount">0</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Live price ticker bar -->
+    <div class="price-bar" onclick="openPriceModal()">
+      <div class="price-bar-label">
+        <span class="ticker-dot"></span>
+        Live Rates
+      </div>
+      <div class="price-bar-ticker">
+        <div class="ticker-item">
+          <span class="ticker-metal">Gold 22K</span>
+          <span class="ticker-val" id="tickerGold">₹7,250/g</span>
+          <span class="ticker-chg chg-up" id="tickerGoldChg">▲ 0.4%</span>
+        </div>
+        <div class="ticker-item">
+          <span class="ticker-metal">Silver 999</span>
+          <span class="ticker-val" id="tickerSilver">₹88/g</span>
+          <span class="ticker-chg chg-up" id="tickerSilverChg">▲ 0.2%</span>
+        </div>
+      </div>
+      <div class="price-bar-cta">View Details →</div>
+    </div>
+
+    <!-- Content -->
+    <div class="content-area">
+
+      <!-- Filter chips -->
+      <div class="filter-row">
+        <span class="filter-label">Filter</span>
+        <div class="chip active" onclick="filterCat('all',this)">All</div>
+        <div class="chip" onclick="filterCat('gold',this)">Gold</div>
+        <div class="chip" onclick="filterCat('silver',this)">Silver</div>
+        <div class="chip" onclick="filterCat('bridal',this)">Bridal</div>
+        <div class="chip" onclick="filterCat('custom',this)">Custom</div>
+      </div>
+
+      <!-- Products grid -->
+      <div class="products-grid" id="productsGrid"></div>
+
+    </div><!-- /content-area -->
+  </div><!-- /main -->
+
+</div><!-- /shell -->
+
+
+<!-- ══════════════════════════════════════════
+     METAL PRICES MODAL
+══════════════════════════════════════════ -->
+<div class="modal-overlay" id="priceModal" onclick="if(event.target===this)closePriceModal()">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div>
+        <div class="modal-head-title">Live Metal Rates</div>
+        <div class="modal-head-sub" id="modalUpdated">Fetching live rates…</div>
+      </div>
+      <button class="modal-close-btn" onclick="closePriceModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="metal-grid">
+        <div class="metal-tile gold">
+          <div class="metal-head">
+            <div class="metal-icon gold">Au</div>
+            <span class="metal-name">Gold · 22K</span>
+          </div>
+          <div class="metal-rate" id="modalGold">₹7,250</div>
+          <div class="metal-per">per gram · INR</div>
+          <div class="metal-10g">10g: <strong id="modalGold10g">₹72,500</strong></div>
+          <span class="metal-chg chg-up-pill" id="modalGoldChg">▲ 0.4%</span>
+        </div>
+        <div class="metal-tile silver">
+          <div class="metal-head">
+            <div class="metal-icon silver">Ag</div>
+            <span class="metal-name">Silver · 999</span>
+          </div>
+          <div class="metal-rate" id="modalSilver">₹88</div>
+          <div class="metal-per">per gram · INR</div>
+          <div class="metal-10g">10g: <strong id="modalSilver10g">₹880</strong></div>
+          <span class="metal-chg chg-up-pill" id="modalSilverChg">▲ 0.2%</span>
+        </div>
+      </div>
+      <div class="modal-note-row">
+        <span class="ticker-dot" style="width:5px;height:5px;"></span>
+        Rates update every 60 seconds · Source: International spot price
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════
+     TOASTS
+══════════════════════════════════════════ -->
+<div class="toast-wrap" id="toastWrap"></div>
+
+
+<!-- ══════════════════════════════════════════
+     JAVASCRIPT
+══════════════════════════════════════════ -->
+<script>
+/* ── Product data ─────────────────────────── */
+const products = [
+  {id:1,  name:'Lakshmi Temple Necklace', cat:'gold',   image:"{% static 'images/lakshminecklace.jpg' %}",  badge:'22K Gold',        price:128500, desc:'Traditional Karnataka temple design'},
+  {id:2,  name:'Bridal Kangan Set',       cat:'bridal', image:"{% static 'images/bridal_kangan.jpg' %}",    badge:'Bridal',          price:125000, desc:'Handcrafted 22K gold pair'},
+  {id:3,  name:'Silver Filigree Jhumkas', cat:'silver', emoji:'✨', badge:'Sterling Silver', price:3200,   desc:'Delicate handwoven earrings'},
+  {id:4,  name:'Gold Mangalsutra',        cat:'gold',   emoji:'🔮', badge:'22K Gold',        price:32000,  desc:'Traditional 22K gold chain'},
+  {id:5,  name:'Custom Name Pendant',     cat:'custom', emoji:'🛠️',badge:'Custom',           price:8500,   desc:'Gold · personalised letters'},
+  {id:6,  name:'Silver Anklet Pair',      cat:'silver', emoji:'🌙', badge:'Sterling Silver', price:2800,   desc:'Handcrafted 925 silver'},
+  {id:7,  name:'Bridal Nath',             cat:'bridal', emoji:'💍', badge:'Bridal',          price:18000,  desc:'22K with pearl finish'},
+  {id:8,  name:'Gold Kada Bangle',        cat:'gold',   emoji:'🌀', badge:'22K Gold',        price:68000,  desc:'Heavy plain gold kada', out_of_stock: true},
+  {id:9,  name:'Silver Pooja Thali Set',  cat:'silver', emoji:'🪔', badge:'Sterling Silver', price:12500,  desc:'Pure 999 silver thali'},
+  {id:10, name:'Custom Ring Design',      cat:'custom', emoji:'💎', badge:'Custom',          price:15000,  desc:'Gold · your design'},
+  {id:11, name:'Bridal Full Set',         cat:'bridal', emoji:'👑', badge:'Bridal',          price:285000, desc:'Necklace + bangles + earrings'},
+  {id:12, name:'Silver Waist Chain',      cat:'silver', emoji:'⛓️',badge:'Sterling Silver',  price:7800,   desc:'Traditional vaddanam style'},
+];
+
+const inr = n => '₹' + Number(n).toLocaleString('en-IN');
+
+/* ── Wishlist (local) ─────────────────────── */
+let wishlist = JSON.parse(localStorage.getItem('mayinWishlist') || '[]');
+function toggleWishlist(e, id) {
+  e.preventDefault(); e.stopPropagation();
+  const btn = document.querySelector(`.p-wishlist[data-id="${id}"]`);
+  if (wishlist.includes(id)) {
+    wishlist = wishlist.filter(x => x !== id);
+    if (btn) { btn.classList.remove('active'); btn.innerHTML = '♡'; }
+    showToast('Removed from wishlist', '♡');
+  } else {
+    wishlist.push(id);
+    if (btn) { btn.classList.add('active'); btn.innerHTML = '♥'; }
+    showToast('Added to wishlist', '♥');
+  }
+  localStorage.setItem('mayinWishlist', JSON.stringify(wishlist));
+}
+
+/* ── Cart ──────────────────────────────────── */
+function getCart() { return JSON.parse(localStorage.getItem('mayinCart') || '[]'); }
+function saveCart(c) { localStorage.setItem('mayinCart', JSON.stringify(c)); }
+function cartCount() { return getCart().reduce((s,i) => s+i.qty, 0); }
+
+function addToCart(e, id, name, price, emoji) {
+  e.preventDefault(); e.stopPropagation();
+  let cart = getCart();
+  const idx = cart.findIndex(i => i.id === id);
+  if (idx > -1) cart[idx].qty++;
+  else cart.push({ id, name, price, emoji, qty: 1 });
+  saveCart(cart);
+  updateCartUI();
+  showToast(`${name} added to cart`, '🛒');
+}
+
+function updateCartUI() {
+  const n = cartCount();
+  const pill = document.getElementById('cartPillCount');
+  const badge = document.getElementById('cartNavBadge');
+  if (pill) { pill.textContent = n; pill.classList.toggle('show', n > 0); }
+  if (badge) { badge.textContent = n; badge.classList.toggle('show', n > 0); }
+}
+
+/* ── Render products ──────────────────────── */
+function renderProducts(cat) {
+  const grid = document.getElementById('productsGrid');
+  const list = cat === 'all' ? products : products.filter(p => p.cat === cat);
+  grid.innerHTML = list.map(p => {
+    const inWishlist = wishlist.includes(p.id);
+    const imgHtml = p.image
+      ? `<img src="${p.image}" alt="${p.name}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
+      : '';
+    const fallbackStyle = p.image ? 'display:none' : '';
+    return `
+      <a href="/product/${p.id}/" class="p-card" style="animation:fadeIn 0.3s ease both">
+        <div class="p-img">
+          ${imgHtml}
+          <div class="p-emoji-fallback" style="${fallbackStyle}">${p.emoji || '💎'}</div>
+          ${p.out_of_stock ? '<span class="p-stock-out">Out of Stock</span>' : ''}
+          ${!p.out_of_stock ? `<button class="p-quick-add" onclick="addToCart(event,${p.id},'${p.name}',${p.price},'${p.emoji||'💎'}')">+ Add to Cart</button>` : ''}
+        </div>
+        <div class="p-body">
+          <div class="p-badge">${p.badge}</div>
+          <div class="p-name">${p.name}</div>
+          <div class="p-desc">${p.desc}</div>
+          <div class="p-footer">
+            <div class="p-price">${inr(p.price)}</div>
+            <button class="p-wishlist ${inWishlist ? 'active' : ''}" data-id="${p.id}"
+              onclick="toggleWishlist(event,${p.id})">${inWishlist ? '♥' : '♡'}</button>
+          </div>
+        </div>
+      </a>`;
+  }).join('');
+}
+
+/* ── Filter ────────────────────────────────── */
+function filterCat(cat, el) {
+  document.querySelectorAll('.chip, .nav-item').forEach(c => c.classList.remove('active'));
+  if (el) el.classList.add('active');
+  renderProducts(cat);
+}
+
+/* ── Metal prices modal ───────────────────── */
+function openPriceModal()  { document.getElementById('priceModal').classList.add('open'); loadPrices(); }
+function closePriceModal() { document.getElementById('priceModal').classList.remove('open'); }
+
+async function loadPrices() {
+  try {
+    const res  = await fetch("{% url 'metal_prices' %}");
+    const data = await res.json();
+    if (!data.success) throw new Error();
+    const g = data.gold, s = data.silver;
+    const gp = Math.round(g.price_per_gram), sp = Math.round(s.price_per_gram);
+
+    /* Ticker bar */
+    document.getElementById('tickerGold').textContent   = `${inr(gp)}/g`;
+    document.getElementById('tickerSilver').textContent = `${inr(sp)}/g`;
+    const tgc = document.getElementById('tickerGoldChg');
+    tgc.textContent = (g.change_percent>=0?'▲ ':'▼ ') + Math.abs(g.change_percent).toFixed(2)+'%';
+    tgc.className = 'ticker-chg ' + (g.change_percent>=0?'chg-up':'chg-down');
+    const tsc = document.getElementById('tickerSilverChg');
+    tsc.textContent = (s.change_percent>=0?'▲ ':'▼ ') + Math.abs(s.change_percent).toFixed(2)+'%';
+    tsc.className = 'ticker-chg ' + (s.change_percent>=0?'chg-up':'chg-down');
+
+    /* Modal */
+    document.getElementById('modalGold').textContent      = inr(gp);
+    document.getElementById('modalGold10g').textContent   = inr(Math.round(g.price_per_10g));
+    document.getElementById('modalSilver').textContent    = inr(sp);
+    document.getElementById('modalSilver10g').textContent = inr(Math.round(s.price_per_10g));
+    const mgc = document.getElementById('modalGoldChg');
+    mgc.textContent = (g.change_percent>=0?'▲ ':'▼ ') + Math.abs(g.change_percent).toFixed(2)+'%';
+    mgc.className = 'metal-chg ' + (g.change_percent>=0?'chg-up-pill':'chg-down-pill');
+    const msc = document.getElementById('modalSilverChg');
+    msc.textContent = (s.change_percent>=0?'▲ ':'▼ ') + Math.abs(s.change_percent).toFixed(2)+'%';
+    msc.className = 'metal-chg ' + (s.change_percent>=0?'chg-up-pill':'chg-down-pill');
+    const ts = data.last_updated ? new Date(data.last_updated*1000).toLocaleTimeString('en-IN') : 'N/A';
+    document.getElementById('modalUpdated').textContent = `Updated: ${ts}${data.source==='fallback' ? ' · Approx.' : ''}`;
+  } catch(e) {
+    document.getElementById('modalUpdated').textContent = 'Showing approximate values';
+  }
+}
+
+/* ── Toast ──────────────────────────────────── */
+function showToast(msg, icon='✓') {
+  const wrap = document.getElementById('toastWrap');
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.innerHTML = `<span class="toast-icon">${icon}</span>${msg}`;
+  wrap.appendChild(t);
+  requestAnimationFrame(() => { requestAnimationFrame(() => t.classList.add('show')); });
+  setTimeout(() => {
+    t.classList.remove('show');
+    setTimeout(() => t.remove(), 350);
+  }, 2400);
+}
+
+/* ── Fade-in keyframe ───────────────────────── */
+const style = document.createElement('style');
+style.textContent = '@keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }';
+document.head.appendChild(style);
+
+/* ── Init ───────────────────────────────────── */
+renderProducts('all');
+updateCartUI();
+loadPrices();
+setInterval(loadPrices, 60000);
+</script>
+
+{% endblock %}

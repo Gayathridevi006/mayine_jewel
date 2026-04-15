@@ -1,0 +1,224 @@
+{% extends 'mayin/base.html' %}
+{% block title %}{{ product.name }} — mayin Jewellery{% endblock %}
+
+{% block extra_head %}
+<style>
+  nav { display: none; }
+  *, *::before, *::after { box-sizing: border-box; }
+  body { background: #fdf8f0; font-family: 'Jost', sans-serif; color: #4a3c34; }
+
+  /* top bar */
+  .topbar { background: #fff9f2; border-bottom: 1px solid #e8d8c8; padding: 0 2rem; height: 60px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 50; }
+  .topbar-brand { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-weight: 600; color: #9e7a2a; text-decoration: none; letter-spacing: 0.08em; }
+  .topbar-actions { display: flex; align-items: center; gap: 1rem; }
+  .topbar-link { font-size: 0.8rem; color: #7a6a60; text-decoration: none; letter-spacing: 0.1em; }
+  .topbar-link:hover { color: #9e7a2a; }
+  .cart-btn { display: flex; align-items: center; gap: 6px; background: #c9a84c; color: white; padding: 0.4rem 1rem; border-radius: 4px; font-size: 0.78rem; letter-spacing: 0.1em; text-decoration: none; }
+  .cart-count { background: white; color: #9e7a2a; border-radius: 50%; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; font-size: 0.68rem; font-weight: 600; }
+
+  /* breadcrumb */
+  .breadcrumb { padding: 1rem 2rem; font-size: 0.75rem; color: #b8a090; display: flex; align-items: center; gap: 6px; }
+  .breadcrumb a { color: #9e7a2a; text-decoration: none; }
+  .breadcrumb a:hover { text-decoration: underline; }
+
+  /* product layout */
+  .product-layout { max-width: 1100px; margin: 0 auto; padding: 0 2rem 4rem; display: grid; grid-template-columns: 1fr 1fr; gap: 3.5rem; align-items: start; }
+  @media(max-width:768px){ .product-layout { grid-template-columns: 1fr; gap: 2rem; } }
+
+  /* image panel */
+  .product-image-panel { position: sticky; top: 80px; }
+  .product-main-image { background: #fdf3e7; border: 1px solid #e8d8c8; border-radius: 12px; height: 420px; display: flex; align-items: center; justify-content: center; font-size: 8rem; margin-bottom: 1rem; }
+  .product-thumb-row { display: flex; gap: 8px; }
+  .product-thumb { background: #fdf3e7; border: 1.5px solid #e8d8c8; border-radius: 8px; width: 72px; height: 72px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; cursor: pointer; transition: border-color 0.2s; }
+  .product-thumb:hover, .product-thumb.active { border-color: #c9a84c; }
+
+  /* info panel */
+  .product-badge { display: inline-block; background: #faeeda; color: #854f0b; font-size: 0.68rem; padding: 3px 10px; border-radius: 100px; letter-spacing: 0.08em; margin-bottom: 0.7rem; }
+  .product-name { font-family: 'Cormorant Garamond', serif; font-size: 2.2rem; font-weight: 400; color: #3a2e28; line-height: 1.15; margin-bottom: 0.5rem; }
+  .product-price { font-family: 'Cormorant Garamond', serif; font-size: 2rem; color: #9e7a2a; margin-bottom: 1.2rem; }
+  .product-divider { border: none; border-top: 1px solid #e8d8c8; margin: 1.2rem 0; }
+
+  .product-specs { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 1.2rem; }
+  .spec-item { background: #fff9f2; border: 1px solid #e8d8c8; border-radius: 6px; padding: 0.7rem 1rem; }
+  .spec-label { font-size: 0.68rem; color: #b8a090; letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 3px; }
+  .spec-value { font-size: 0.88rem; font-weight: 500; color: #4a3c34; }
+
+  .product-description { font-size: 0.92rem; color: #7a6a60; line-height: 1.75; margin-bottom: 1.5rem; }
+
+  .stock-badge { display: inline-flex; align-items: center; gap: 6px; font-size: 0.78rem; margin-bottom: 1.2rem; }
+  .stock-dot { width: 7px; height: 7px; border-radius: 50%; }
+  .in-stock .stock-dot  { background: #3b6d11; }
+  .in-stock  { color: #3b6d11; }
+  .out-stock .stock-dot { background: #a32d2d; }
+  .out-stock { color: #a32d2d; }
+
+  .qty-row { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
+  .qty-label { font-size: 0.78rem; color: #b8a090; letter-spacing: 0.1em; text-transform: uppercase; }
+  .qty-control { display: flex; align-items: center; border: 1px solid #e8d8c8; border-radius: 6px; overflow: hidden; }
+  .qty-btn { background: #fff9f2; border: none; width: 36px; height: 36px; font-size: 1.1rem; cursor: pointer; color: #7a6a60; transition: background 0.15s; }
+  .qty-btn:hover { background: #fdf3e7; }
+  .qty-num { width: 44px; text-align: center; font-size: 0.9rem; font-weight: 500; color: #3a2e28; border-left: 1px solid #e8d8c8; border-right: 1px solid #e8d8c8; height: 36px; display: flex; align-items: center; justify-content: center; }
+
+  .btn-add-cart { width: 100%; padding: 1rem; background: #c9a84c; color: white; border: none; border-radius: 6px; font-family: 'Jost', sans-serif; font-size: 0.85rem; letter-spacing: 0.18em; text-transform: uppercase; cursor: pointer; transition: background 0.2s, transform 0.15s; margin-bottom: 0.75rem; }
+  .btn-add-cart:hover { background: #9e7a2a; transform: translateY(-1px); }
+  .btn-add-cart:disabled { background: #c8b8a8; cursor: not-allowed; transform: none; }
+  .btn-wishlist { width: 100%; padding: 0.95rem; background: white; border: 1.5px solid #e8d8c8; color: #7a6a60; border-radius: 6px; font-family: 'Jost', sans-serif; font-size: 0.85rem; letter-spacing: 0.15em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; }
+  .btn-wishlist:hover { border-color: #c9a84c; color: #9e7a2a; }
+
+  .toast { position: fixed; bottom: 2rem; right: 2rem; background: #3a2e28; color: white; padding: 0.85rem 1.5rem; border-radius: 8px; font-size: 0.85rem; transform: translateY(80px); opacity: 0; transition: all 0.3s; z-index: 200; }
+  .toast.show { transform: translateY(0); opacity: 1; }
+
+  /* related */
+  .related-section { max-width: 1100px; margin: 0 auto; padding: 2rem 2rem 4rem; }
+  .section-label { font-size: 0.68rem; letter-spacing: 0.2em; text-transform: uppercase; color: #b8a090; margin-bottom: 0.5rem; }
+  .section-title { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; font-weight: 400; color: #3a2e28; margin-bottom: 1.5rem; }
+  .related-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; }
+  .related-card { background: white; border: 1px solid #e8d8c8; border-radius: 10px; overflow: hidden; text-decoration: none; color: inherit; transition: border-color 0.2s, transform 0.2s; display: block; }
+  .related-card:hover { border-color: #c9a84c; transform: translateY(-2px); }
+  .related-thumb { height: 110px; background: #fdf3e7; display: flex; align-items: center; justify-content: center; font-size: 2.4rem; }
+  .related-info { padding: 0.8rem; }
+  .related-name { font-size: 0.85rem; font-weight: 500; color: #3a2e28; margin-bottom: 4px; }
+  .related-price { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; color: #9e7a2a; }
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+<!-- Top bar -->
+<header class="topbar">
+  <a href="{% url 'home' %}" class="topbar-brand">mayin</a>
+  <div class="topbar-actions">
+    <a href="{% url 'home' %}" class="topbar-link">Collections</a>
+    <a href="{% url 'signin' %}" class="topbar-link">Sign In</a>
+    <a href="{% url 'cart' %}" class="cart-btn">
+      🛒 Cart <span class="cart-count" id="cartCount">0</span>
+    </a>
+  </div>
+</header>
+
+<!-- Breadcrumb -->
+<nav class="breadcrumb">
+  <a href="{% url 'home' %}">Home</a> ›
+  <span>{{ product.badge }}</span> ›
+  <span>{{ product.name }}</span>
+</nav>
+
+<!-- Product layout -->
+<div class="product-layout">
+
+  <!-- Image panel -->
+  <div class="product-image-panel">
+    <div class="product-main-image" id="mainImg">{{ product.emoji }}</div>
+    <div class="product-thumb-row">
+      <div class="product-thumb active">{{ product.emoji }}</div>
+      <div class="product-thumb">{{ product.emoji }}</div>
+      <div class="product-thumb">{{ product.emoji }}</div>
+    </div>
+  </div>
+
+  <!-- Info panel -->
+  <div class="product-info-panel">
+    <div class="product-badge">{{ product.badge }}</div>
+    <h1 class="product-name">{{ product.name }}</h1>
+    <div class="product-price">₹{{ product.price|floatformat:0 }}</div>
+
+    <div class="stock-badge {% if product.in_stock %}in-stock{% else %}out-stock{% endif %}">
+      <span class="stock-dot"></span>
+      {% if product.in_stock %}In Stock{% else %}Out of Stock{% endif %}
+    </div>
+
+    <hr class="product-divider">
+
+    <div class="product-specs">
+      <div class="spec-item">
+        <div class="spec-label">Weight</div>
+        <div class="spec-value">{{ product.weight }}</div>
+      </div>
+      <div class="spec-item">
+        <div class="spec-label">Purity</div>
+        <div class="spec-value">{{ product.purity }}</div>
+      </div>
+      <div class="spec-item">
+        <div class="spec-label">Category</div>
+        <div class="spec-value">{{ product.badge }}</div>
+      </div>
+      <div class="spec-item">
+        <div class="spec-label">Crafted in</div>
+        <div class="spec-value">Karnataka</div>
+      </div>
+    </div>
+
+    <p class="product-description">{{ product.description }}</p>
+
+    <div class="qty-row">
+      <span class="qty-label">Qty</span>
+      <div class="qty-control">
+        <button class="qty-btn" onclick="changeQty(-1)">−</button>
+        <div class="qty-num" id="qtyDisplay">1</div>
+        <button class="qty-btn" onclick="changeQty(1)">+</button>
+      </div>
+    </div>
+
+    <button class="btn-add-cart" id="addCartBtn"
+      {% if not product.in_stock %}disabled{% endif %}
+      onclick="addToCart('{{ product.id }}', '{{ product.name }}', '{{ product.price }}', '{{ product.emoji }}')">
+      {% if product.in_stock %}Add to Cart{% else %}Out of Stock{% endif %}
+    </button>
+    <button class="btn-wishlist">♡ &nbsp; Save to Wishlist</button>
+  </div>
+</div>
+
+<!-- Related products -->
+{% if related %}
+<section class="related-section">
+  <p class="section-label">You May Also Like</p>
+  <h2 class="section-title">Related Products</h2>
+  <div class="related-grid">
+    {% for item in related %}
+    <a href="{% url 'product_detail' item.id %}" class="related-card">
+      <div class="related-thumb">{{ item.emoji }}</div>
+      <div class="related-info">
+        <div class="related-name">{{ item.name }}</div>
+        <div class="related-price">₹{{ item.price|floatformat:0 }}</div>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+<!-- Toast -->
+<div class="toast" id="toast">✓ Added to cart!</div>
+
+<script>
+  let qty = 1;
+  function changeQty(d) {
+    qty = Math.max(1, Math.min(10, qty + d));
+    document.getElementById('qtyDisplay').textContent = qty;
+  }
+
+  function addToCart(id, name, price, emoji) {
+    let cart = JSON.parse(localStorage.getItem('mayinCart') || '[]');
+    const idx = cart.findIndex(i => i.id === id);
+    if (idx > -1) cart[idx].qty += qty;
+    else cart.push({ id, name, price, emoji, qty });
+    localStorage.setItem('mayinCart', JSON.stringify(cart));
+    updateCartCount();
+    showToast();
+  }
+
+  function updateCartCount() {
+    const cart = JSON.parse(localStorage.getItem('mayinCart') || '[]');
+    const total = cart.reduce((s, i) => s + i.qty, 0);
+    document.getElementById('cartCount').textContent = total;
+  }
+
+  function showToast() {
+    const t = document.getElementById('toast');
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2500);
+  }
+
+  updateCartCount();
+</script>
+{% endblock %}
